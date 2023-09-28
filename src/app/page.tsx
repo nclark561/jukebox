@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [song, setSong] = useState<any>()
-  const { API_KEY } = process.env
 
   useEffect(() => {
-    fetch('https://api.spotify.com/v1/tracks/4s7qEhuFacYJMJjTISwTSo', {
+    fetch('https://api.spotify.com/v1/tracks/5VEnzMXc8ocZko4M4TqnR2', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${API_KEY}`
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
       }
     }).then(async (res: any) => {
       const resp = await res.json()
