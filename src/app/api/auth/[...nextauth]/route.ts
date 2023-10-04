@@ -31,8 +31,7 @@ const params = {
 const queryParamString = new URLSearchParams(params);
 const LOGIN_URL = `https://accounts.spotify.com/authorize?` + queryParamString.toString();
 
-
-const handler = NextAuth({
+export const authOptions = {
     providers: [
         SpotifyProvider({
             clientId,
@@ -40,12 +39,15 @@ const handler = NextAuth({
             authorization: LOGIN_URL,
             profile(profile) {
                 return {
-                    id: profile.id
+                    id: profile.id,
+                    image: profile.images?.[0]?.url
                 }
             }
         })
     ],
     secret
-})
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST}
