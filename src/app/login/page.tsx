@@ -1,10 +1,11 @@
 'use client'
+import { signIn } from "next-auth/react";
 
 export default function page() {
 
   return (
     <div>
-      <a href="/api/auth/signin">Login</a>
+      <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>
     </div>
   );
 }
