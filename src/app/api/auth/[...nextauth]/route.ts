@@ -36,16 +36,23 @@ export const authOptions = {
         SpotifyProvider({
             clientId,
             clientSecret,
-            authorization: LOGIN_URL,
-            profile(profile) {
-                return {
-                    id: profile.id,
-                    image: profile.images?.[0]?.url
-                }
-            }
+            authorization: LOGIN_URL
         })
     ],
-    secret
+    secret,
+    callbacks: {
+        async jwt({ token, account }: { token: any, account: any}) {
+            if(account) {
+                token.id = account.id
+                token.accessToken = account.access_token
+            }
+            return token
+        },
+        async session({ session, token }: { session: any, token: any}) {
+            session.user = token
+            return session
+        }
+    }
 }
 
 const handler = NextAuth(authOptions)
