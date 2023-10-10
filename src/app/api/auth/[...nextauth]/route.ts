@@ -87,6 +87,7 @@ export const authOptions = {
       if (account) {
         token.id = account.id;
         token.accessToken = account.access_token;
+        token.accessTokenExpires = Date.now() + account.expires_in * 1000
       }
       if(Date.now() < token.accessTokenExpires) return token
       return refreshAccessToken(token)

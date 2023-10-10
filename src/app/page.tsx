@@ -12,7 +12,7 @@ export default function Home() {
       <div>
         { session && ( 
           <div>
-          <img src={session?.data?.user?.user?.image}></img> 
+          <img src={session?.data?.user?.picture}></img> 
           { session.status === 'authenticated' && <Remote session={session}/>}
           </div>
         )}
