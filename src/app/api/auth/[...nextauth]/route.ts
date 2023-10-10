@@ -43,6 +43,7 @@ async function refreshAccessToken(token: any) {
         grant_type: "refresh_token",
         refresh_token: token.refreshToken,
       });
+      console.log(url)
 
     const response = await fetch(url, {
       headers: {
@@ -88,6 +89,7 @@ export const authOptions = {
         token.id = account.id;
         token.accessToken = account.access_token;
         token.accessTokenExpires = Date.now() + account.expires_in * 1000
+        token.refreshToken = account.refresh_token
       }
       if(Date.now() < token.accessTokenExpires) return token
       return refreshAccessToken(token)
