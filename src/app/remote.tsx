@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 export default function Remote({ session }: { session: any }) {
   const [device, setDevice] = useState();
-  console.log(device)
 
   const handleClick = (action: string) => {
     fetch(`https://api.spotify.com/v1/me/player/${action}`, {
