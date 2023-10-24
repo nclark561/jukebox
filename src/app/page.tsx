@@ -1,6 +1,7 @@
 'use client'
 import { signOut, useSession } from "next-auth/react";
 import Remote from "./remote";
+import styles from './page.module.css'
 import Image from "next/image";
 // import Search from "./search";
 import { useEffect, useState } from "react";
@@ -31,32 +32,49 @@ export default function Home() {
 
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div>
-        {session && (
-          <div>
-            <img src={session?.data?.user?.picture}></img>
-            {session.status === 'authenticated' && <Remote session={session} />}
-          </div>
-        )}
-      </div>
-      <input onChange={(event) => {
-        setSearch(event?.target.value)
-      }} type="text" />
-      <button onClick={() => {
-        handleClick()
-      }}>press me</button>
-      {results ? <>{results.slice(0, 5).map((item) => {
-        return (
-          <div>
-            
-            <Image src={item.album.images[1].url} height={100} width={100}></Image>
-            <div>{item.album.name}</div>
-          </div>
-        )
-      })}</> : <></>}
+    <main className={styles.main}>
+      <div className={styles.content}>
+        <div>
+          {session && (
+            <div>
+              <img src={session?.data?.user?.picture}></img>
+              {session.status === 'authenticated' && <Remote session={session} />}
+              {session?.status === "authenticated" ? <button onClick={() => signOut()}>logout</button> : <Link href='/login'>Login</Link>}
+            </div>
+          )}
+        </div>
+        <div className={styles.row}>
+          <input className={styles.input} onChange={(event) => {
+            setSearch(event?.target.value)
+          }} type="text" />
+          <Image onClick={() => {
+            handleClick()
+          }} src={'/search.png'} height={50} width={50}></Image>
+        </div>
+        <div>
+          <div>Title</div>
+          <div>Album</div>
+        </div>
+        <div className={styles.line}></div>
+        
+        {results ? <>{results.slice(0, 5).map((item) => {
+          return (
+            <div className={styles.rowSong}>
+              <div>
+              <Image src={item.album.images[1].url} height={100} width={100}></Image>
+              </div>
+              <div className={styles.column}>
+                <div>{item.name}</div>
+                <div>{item.artists[0].name}</div>
+              </div>
+              <div>{item.album.name}</div>
+              <div>{item.duration_ms}</div>
+            </div>
+          )
+        })}</> : <></>}
 
-      {session?.status === "authenticated" ? <button onClick={() => signOut()}>logout</button> : <Link href='/login'>Login</Link>}
+
+      </div>
     </main>
   );
 }
