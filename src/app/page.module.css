@@ -19,6 +19,9 @@
     align-items: center;
     width: 50%;
 }
+.rowGap{
+    display: flex;
+}
 .line{
     width: 80%;
     height: .5px;
@@ -31,10 +34,26 @@
     width: 85%;
     padding: 25px;
 }
+.rowSong:hover{
+    transition: .5s all ease-in-out;
+    border-radius: 5px;
+    background-color: rgb(79, 79, 79) ;
+}
 .rowSong div{
     color: white;
     text-align: center;
     
+}
+.topRow{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+.button{
+    background-color: white;
+    padding: 5px;
+    color: black;
+    border-radius: 5px  ;
 }
 .column{
     display: flex;

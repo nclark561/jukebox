@@ -51,24 +51,28 @@ export default function Home() {
             handleClick()
           }} src={'/search.png'} height={50} width={50}></Image>
         </div>
-        <div>
+        <div className={styles.topRow}>
           <div>Title</div>
+          <div></div>
           <div>Album</div>
+          <div></div>
+          <div></div>
         </div>
         <div className={styles.line}></div>
-        
+
         {results ? <>{results.slice(0, 5).map((item) => {
           return (
             <div className={styles.rowSong}>
-              <div>
-              <Image src={item.album.images[1].url} height={100} width={100}></Image>
-              </div>
-              <div className={styles.column}>
-                <div>{item.name}</div>
-                <div>{item.artists[0].name}</div>
+              <div className={styles.rowGap}>
+                <Image src={item.album.images[1].url} height={90} width={100}></Image>
+                <div style={{padding:"10px"}} className={styles.column}>
+                  <div>{item.name}</div>
+                  <div>{item.artists[0].name}</div>
+                </div>
               </div>
               <div>{item.album.name}</div>
               <div>{item.duration_ms}</div>
+              <button className={styles.button}>Add to Queue</button>
             </div>
           )
         })}</> : <></>}
