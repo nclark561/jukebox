@@ -1,6 +1,7 @@
 'use client'
 import { signOut, useSession } from "next-auth/react";
-import Remote from "./remote";
+import { Track } from "@spotify/web-api-ts-sdk";
+import Queue from "./components/Queue";
 import styles from './page.module.css'
 import Image from "next/image";
 // import Search from "./search";
@@ -8,11 +9,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Home() {
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState<string | undefined>();
   const [song, setSong] = useState();
-  const [results, setResults] = useState();
+  const [results, setResults] = useState<Track[]>();
 
-  async function handleClick(action: string) {
+  async function handleClick() {
     const result = search?.replace(/\s+/g, "+")
     const response = await fetch(`https://api.spotify.com/v1/search?q=${result}&type=track`, {
       headers: {
@@ -33,12 +34,13 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
+      <Queue />
       <div className={styles.content}>
         <div>
           {session && (
             <div>
               <img src={session?.data?.user?.picture}></img>
-              {session.status === 'authenticated' && <Remote session={session} />}
+
               {session?.status === "authenticated" ? <button onClick={() => signOut()}>logout</button> : <Link href='/login'>Login</Link>}
             </div>
           )}
@@ -47,7 +49,7 @@ export default function Home() {
           <input className={styles.input} onChange={(event) => {
             setSearch(event?.target.value)
           }} type="text" />
-          <Image onClick={() => {
+          <Image alt={"something"} onClick={() => {
             handleClick()
           }} src={'/search.png'} height={50} width={50}></Image>
         </div>
@@ -64,8 +66,8 @@ export default function Home() {
           return (
             <div className={styles.rowSong}>
               <div className={styles.rowGap}>
-                <Image src={item.album.images[1].url} height={90} width={100}></Image>
-                <div style={{padding:"10px"}} className={styles.column}>
+                <Image alt={"something"} src={item.album.images[1].url} height={90} width={100}></Image>
+                <div style={{ padding: "10px" }} className={styles.column}>
                   <div>{item.name}</div>
                   <div>{item.artists[0].name}</div>
                 </div>

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@spotify/web-api-ts-sdk": "^1.1.2",
     "next": "latest",
     "next-auth": "^4.23.2",
     "react": "latest",
