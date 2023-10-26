@@ -62,9 +62,9 @@ export default function Home() {
         </div>
         <div className={styles.line}></div>
 
-        {results ? <>{results.slice(0, 5).map((item) => {
+        {results ? <>{results.slice(0, 5).map((item, index) => {
           return (
-            <div className={styles.rowSong}>
+            <div key={index} className={styles.rowSong}>
               <div className={styles.rowGap}>
                 <Image alt={"something"} src={item.album.images[1].url} height={90} width={100}></Image>
                 <div style={{ padding: "10px" }} className={styles.column}>
