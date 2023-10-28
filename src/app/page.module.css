@@ -63,8 +63,20 @@
     flex-direction: column;
     
 }
+.searchInput{
+    display: flex;
+
+}
 .input{
-    width: 500px;
-    color: black;
-    border-radius: 10px;
+    width: 300px;
+    height: 30px;
+    padding-left: 30px;
+    font-size: 15px;
+    color: white;
+    outline: 1px solid rgb(221,221,221);
+    background-color: rgb(36,36,36);
+    border-radius: 20px;
+}
+.input::placeholder{
+    
 }

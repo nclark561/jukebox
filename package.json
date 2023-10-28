@@ -13,7 +13,9 @@
     "next": "latest",
     "next-auth": "^4.23.2",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@types/node": "latest",

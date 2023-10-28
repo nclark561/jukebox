@@ -11,9 +11,11 @@ import Link from "next/link";
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
   const [queue, setQueue] = useState<Track[]>([]);
+  const [txt, setTxt] = useState<string>();
   const [results, setResults] = useState<Track[]>();
 
   async function handleClick() {
+    setTxt('')
     const result = search?.replace(/\s+/g, "+")
     const response = await fetch(`https://api.spotify.com/v1/search?q=${result}&type=track`, {
       headers: {
@@ -34,7 +36,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <Queue queue={queue}/>
+      <Queue queue={queue} />
       <div className={styles.content}>
         <div>
           {session && (
@@ -49,15 +51,18 @@ export default function Home() {
           evt.preventDefault()
           handleClick()
         }}>
-          <input className={styles.input} onChange={(event) => {
-            setSearch(event?.target.value)
-          }} type="text" />
-          <Image alt={"something"} onClick={() => {
-            handleClick()
-          }} src={'/search.png'} height={50} width={50}></Image>
+          <div className={styles.searchInput}>
+            <Image alt={"something"} onClick={() => {
+              handleClick()
+            }} src={'/search.png'} style={{position:"absolute", marginTop:"6px", marginLeft:"10px"}} height={18} width={18}></Image>
+            <input placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
+              setTxt(event.target.value)
+              setSearch(event?.target.value)
+            }} type="text" />
+          </div>
         </form>
         <div className={styles.topRow}>
-          <div>Title</div>
+          <div>Titl</div>
           <div></div>
           <div>Album</div>
           <div></div>
