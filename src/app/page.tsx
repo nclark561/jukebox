@@ -12,6 +12,7 @@ export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
   const [queue, setQueue] = useState<Track[]>([]);
   const [txt, setTxt] = useState<string>();
+  const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
 
   async function handleClick() {
@@ -43,7 +44,7 @@ export default function Home() {
             <div>
               <img src={session?.data?.user?.picture}></img>
 
-              {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{width:"100%"}}>logout</button> : <Link href='/login'>Login</Link>}
+              {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{width:"100%", textAlign:"end"}}>logout</button> : <Link href='/login'>Login</Link>}
             </div>
           )}
         </div>
@@ -74,6 +75,7 @@ export default function Home() {
         {results ? <>{results.slice(0, 5).map((item, index) => {
           return (
             <div key={index} className={styles.rowSong}>
+              <div>{index + 1}</div>
               <div className={styles.rowGap}>
                 <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
                 <div style={{ padding: "10px" }} className={styles.column}>
