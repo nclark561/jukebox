@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
-  const [song, setSong] = useState();
+  const [queue, setQueue] = useState<Track[]>([]);
   const [results, setResults] = useState<Track[]>();
 
   async function handleClick() {
@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <Queue />
+      <Queue queue={queue}/>
       <div className={styles.content}>
         <div>
           {session && (
@@ -74,7 +74,7 @@ export default function Home() {
               </div>
               <div>{item.album.name}</div>
               <div>{item.duration_ms}</div>
-              <button className={styles.button}>Add to Queue</button>
+              <button className={styles.button} onClick={() => setQueue(prev => [...prev, item])}>Add to Queue</button>
             </div>
           )
         })}</> : <></>}
