@@ -43,7 +43,7 @@ export default function Home() {
             <div>
               <img src={session?.data?.user?.picture}></img>
 
-              {session?.status === "authenticated" ? <button onClick={() => signOut()}>logout</button> : <Link href='/login'>Login</Link>}
+              {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{width:"100%"}}>logout</button> : <Link href='/login'>Login</Link>}
             </div>
           )}
         </div>
@@ -54,7 +54,7 @@ export default function Home() {
           <div className={styles.searchInput}>
             <Image alt={"something"} onClick={() => {
               handleClick()
-            }} src={'/search.png'} style={{position:"absolute", marginTop:"6px", marginLeft:"10px"}} height={18} width={18}></Image>
+            }} src={'/search.png'} style={{position:"absolute", marginTop:"16px", marginLeft:"10px"}} height={18} width={18}></Image>
             <input placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
               setTxt(event.target.value)
               setSearch(event?.target.value)
@@ -62,27 +62,29 @@ export default function Home() {
           </div>
         </form>
         <div className={styles.topRow}>
-          <div>Titl</div>
+          <div>Title</div>
           <div></div>
           <div>Album</div>
           <div></div>
           <div></div>
         </div>
         <div className={styles.line}></div>
+        
 
         {results ? <>{results.slice(0, 5).map((item, index) => {
           return (
             <div key={index} className={styles.rowSong}>
               <div className={styles.rowGap}>
-                <Image alt={"something"} src={item.album.images[1].url} height={90} width={100}></Image>
+                <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
                 <div style={{ padding: "10px" }} className={styles.column}>
-                  <div>{item.name}</div>
-                  <div>{item.artists[0].name}</div>
+                  <div style={{width:"175px"}}>{item.name}</div>
+                  <div className={styles.miniTitle}>{item.artists[0].name}</div>
                 </div>
               </div>
-              <div>{item.album.name}</div>
-              <div>{item.duration_ms}</div>
-              <button className={styles.button} onClick={() => setQueue(prev => [...prev, item])}>Add to Queue</button>
+              <div style={{width:"175px"}}>{item.album.name}</div>
+              <div style={{width:"175px"}}>{item.duration_ms}</div>
+              <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15}  src={'/plus.png'}></Image>
+              
             </div>
           )
         })}</> : <></>}
