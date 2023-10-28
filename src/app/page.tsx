@@ -45,14 +45,17 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className={styles.row}>
+        <form className={styles.row} onSubmit={(evt) => {
+          evt.preventDefault()
+          handleClick()
+        }}>
           <input className={styles.input} onChange={(event) => {
             setSearch(event?.target.value)
           }} type="text" />
           <Image alt={"something"} onClick={() => {
             handleClick()
           }} src={'/search.png'} height={50} width={50}></Image>
-        </div>
+        </form>
         <div className={styles.topRow}>
           <div>Title</div>
           <div></div>
