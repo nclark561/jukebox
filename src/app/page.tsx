@@ -13,7 +13,7 @@ export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
   const [queue, setQueue] = useState<Track[]>([]);
   const [txt, setTxt] = useState<string>();
-  const [userId, setUserId] = useState<string>("");
+  const [userId, setUserId] = useState<{}[]>();
   const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
 
@@ -46,15 +46,11 @@ export default function Home() {
       })
       const test = await response.json()
         .catch(err => console.error(err))
-        // console.log(test.id, "this should be my id")
-        setUserId(test.id)
-        playlistFunction(test.id)
+      playlistFunction(test.id)
     }
     playlists()
   }, [])
-  const playlistFunction = async (id:string) => {
-    // console.log(id, "thjis is user id")
-    // debugger
+  const playlistFunction = async (id: string) => {
     const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists `, {
       headers: {
         Accept: "application/json",
@@ -65,13 +61,13 @@ export default function Home() {
     })
     const test = await response.json()
       .catch(err => console.error(err))
-      console.log(test, "should be playlists`")
-    // setUserId(test.id)
+    console.log(test, "should be playlists`")
+    setUserId(test.items)
   }
 
 
   const session: any = useSession()
-  function millisToMinutesAndSeconds(millis:number) {
+  function millisToMinutesAndSeconds(millis: number) {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     // Math.round(seconds)
@@ -81,7 +77,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <Queue  queue={queue} />
+      <Queue queue={queue} />
       <div className={styles.content}>
         <div>
           {session && (
@@ -107,7 +103,7 @@ export default function Home() {
           </div>
         </form>
         <div className={styles.topRow}>
-          <div>Title</div>
+          <div>Titl</div>
           <div></div>
           <div>Album</div>
           <div></div>
@@ -134,7 +130,15 @@ export default function Home() {
 
             </div>
           )
-        })}</> : <></>}
+        })}</> : <div className={styles.grid}>
+          {userId?.map((item, index) => {
+            return(
+              <div className={styles.box}>
+                <div>{item.name}</div>
+              </div>
+            )
+          })}
+          </div>}
 
 
       </div>
