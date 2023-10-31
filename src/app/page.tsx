@@ -7,11 +7,13 @@ import Image from "next/image";
 // import Search from "./search";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { debug } from "console";
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
   const [queue, setQueue] = useState<Track[]>([]);
   const [txt, setTxt] = useState<string>();
+  const [userId, setUserId] = useState<string>("");
   const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
 
@@ -32,19 +34,61 @@ export default function Home() {
     console.log(test.tracks.items)
   }
 
+  useEffect(() => {
+    const playlists = async () => {
+      const response = await fetch(`https://api.spotify.com/v1/me `, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.data.user.accessToken}`,
+        },
+        method: "GET",
+      })
+      const test = await response.json()
+        .catch(err => console.error(err))
+        // console.log(test.id, "this should be my id")
+        setUserId(test.id)
+        playlistFunction(test.id)
+    }
+    playlists()
+  }, [])
+  const playlistFunction = async (id:string) => {
+    // console.log(id, "thjis is user id")
+    // debugger
+    const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists `, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.data.user.accessToken}`,
+      },
+      method: "GET",
+    })
+    const test = await response.json()
+      .catch(err => console.error(err))
+      console.log(test, "should be playlists`")
+    // setUserId(test.id)
+  }
+
+
   const session: any = useSession()
+  function millisToMinutesAndSeconds(millis:number) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    // Math.round(seconds)
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+  }
 
 
   return (
     <main className={styles.main}>
-      <Queue queue={queue} />
+      <Queue  queue={queue} />
       <div className={styles.content}>
         <div>
           {session && (
             <div>
               <img src={session?.data?.user?.picture}></img>
 
-              {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{width:"100%", textAlign:"end"}}>logout</button> : <Link href='/login'>Login</Link>}
+              {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <Link href='/login'>Login</Link>}
             </div>
           )}
         </div>
@@ -55,7 +99,7 @@ export default function Home() {
           <div className={styles.searchInput}>
             <Image alt={"something"} onClick={() => {
               handleClick()
-            }} src={'/search.png'} style={{position:"absolute", marginTop:"16px", marginLeft:"10px"}} height={18} width={18}></Image>
+            }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
             <input placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
               setTxt(event.target.value)
               setSearch(event?.target.value)
@@ -70,23 +114,24 @@ export default function Home() {
           <div></div>
         </div>
         <div className={styles.line}></div>
-        
+
 
         {results ? <>{results.slice(0, 5).map((item, index) => {
           return (
+            // {item.album.images[1].url? <><> : null}
             <div key={index} className={styles.rowSong}>
               <div>{index + 1}</div>
               <div className={styles.rowGap}>
                 <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
                 <div style={{ padding: "10px" }} className={styles.column}>
-                  <div style={{width:"175px"}}>{item.name}</div>
+                  <div style={{ width: "175px" }}>{item.name}</div>
                   <div className={styles.miniTitle}>{item.artists[0].name}</div>
                 </div>
               </div>
-              <div style={{width:"175px"}}>{item.album.name}</div>
-              <div style={{width:"175px"}}>{item.duration_ms}</div>
-              <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15}  src={'/plus.png'}></Image>
-              
+              <div style={{ width: "175px" }}>{item.album.name}</div>
+              <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.duration_ms)}</div>
+              <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
+
             </div>
           )
         })}</> : <></>}

@@ -15,7 +15,8 @@
     "react": "latest",
     "react-dom": "latest",
     "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "use-state-with-callback": "^3.0.2"
   },
   "devDependencies": {
     "@types/node": "latest",
