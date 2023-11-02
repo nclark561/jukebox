@@ -96,7 +96,9 @@ export default function Home() {
             <Image alt={"something"} onClick={() => {
               handleClick()
             }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
-            <input placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
+            <input onClick={() => {
+
+            }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
               setTxt(event.target.value)
               setSearch(event?.target.value)
             }} type="text" />
@@ -112,7 +114,7 @@ export default function Home() {
         <div className={styles.line}></div>
 
 
-        {results ? <>{results.slice(0, 5).map((item, index) => {
+        {results? <>{results.slice(0, 5).map((item, index) => {
           return (
             // {item.album.images[1].url? <><> : null}
             <div key={index} className={styles.rowSong}>
