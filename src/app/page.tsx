@@ -1,22 +1,34 @@
 'use client'
 import { signOut, useSession } from "next-auth/react";
-import { Track } from "@spotify/web-api-ts-sdk";
+import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "./components/Queue";
 import styles from './page.module.css'
 import Image from "next/image";
 // import Search from "./search";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { debug } from "console";
+import { useGetPlaylistImages } from "./useGetPlaylistImages";
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
   const [queue, setQueue] = useState<Track[]>([]);
   const [txt, setTxt] = useState<string>();
-  const [userId, setUserId] = useState<{}[]>();
+  const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
   const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
+  const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
+  // const playlistImages = useMemo(() => {
+  //   if (userPlaylists.length > 0) {
+  //     return Promise.all(userPlaylists.map(async (playlist) => {
+  //       return await getPlaylistImage(playlist.id)
+  //     }))
+  //   }
+  //   return []
+  // }, [userPlaylists])
 
+
+  // console.log(playlistImages, "these are the images")
   async function handleClick() {
     setTxt('')
     const result = search?.replace(/\s+/g, "+")
@@ -51,7 +63,7 @@ export default function Home() {
     playlists()
   }, [])
   const playlistFunction = async (id: string) => {
-    const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists `, {
+    const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists`, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -62,7 +74,7 @@ export default function Home() {
     const test = await response.json()
       .catch(err => console.error(err))
     console.log(test, "should be playlists`")
-    setUserId(test.items)
+    setUserPlaylists(test.items)
   }
 
 
@@ -105,7 +117,7 @@ export default function Home() {
           </div>
         </form>
         <div className={styles.topRow}>
-          <div>Titl</div>
+          <div>Title</div>
           <div></div>
           <div>Album</div>
           <div></div>
@@ -114,7 +126,7 @@ export default function Home() {
         <div className={styles.line}></div>
 
 
-        {results? <>{results.slice(0, 5).map((item, index) => {
+        {results ? <>{results.slice(0, 5).map((item, index) => {
           return (
             // {item.album.images[1].url? <><> : null}
             <div key={index} className={styles.rowSong}>
@@ -133,14 +145,30 @@ export default function Home() {
             </div>
           )
         })}</> : <div className={styles.grid}>
-          {userId?.map((item, index) => {
-            return(
-              <div className={styles.box}>
-                <div>{item.name}</div>
-              </div>
+
+          {userPlaylists.map((playlist, index) => {
+            // playlistImage()
+            console.log(images)
+            return (
+              <Link href={`/playlist?id=${playlist.id}`}>
+                <div className={styles.box}>
+                  {
+                    images.map((item, index) => {
+                      return (
+                        <div>
+                          <div>kale</div>
+                          <Image alt={'playlist cover image'} src={item.url} width={50} height={50}></Image>
+                        </div>
+                      )
+                    })
+                  }
+
+                  <div>{playlist.name}</div>
+                </div>
+              </Link>
             )
           })}
-          </div>}
+        </div>}
 
 
       </div>

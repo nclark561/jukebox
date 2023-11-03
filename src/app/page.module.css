@@ -24,16 +24,20 @@
 }
 .box{
     background-color: white;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    justify-content: space-evenly;
     width: 200px;
     color: black;
-    height: 200px;
+    height: 75px;
 }
 .grid{
     padding-top: 30px;
     display: grid;
     color: black;
     place-items: center;
-    gap: 30px;
+    gap: 50px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .line{
