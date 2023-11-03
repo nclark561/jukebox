@@ -41,7 +41,7 @@ export default function page() {
       <div className="flex flex-col">
         <button
           onClick={() => {
-            socket.emit("create-queue", "queue-room-1979", queue, (response: SuccessfulResponse | ErrorResponse) => {
+            socket.emit("create-queue", "queue-room-1979", (response: SuccessfulResponse | ErrorResponse) => {
               console.log(response);
               if ("errorMsg" in response) alert(response.errorMsg)
             });
