@@ -152,7 +152,7 @@ export default function Home() {
             return (
               <Link href={`/playlist?id=${playlist.id}`}>
                 <div className={styles.box}>
-                  {
+                  {/* {
                     images.map((item, index) => {
                       return (
                         <div>
@@ -161,7 +161,7 @@ export default function Home() {
                         </div>
                       )
                     })
-                  }
+                  } */}
 
                   <div>{playlist.name}</div>
                 </div>

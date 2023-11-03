@@ -47,8 +47,8 @@ export default function Home() {
                 method: "GET",
             })
             const test = await response.json()
-            .catch(err => console.error(err))      
-            console.log(test, "this is a test of songs")
+                .catch(err => console.error(err))
+            console.log(test.tracks.items, "this is a test of songs")
             setSongs(test)
 
         }
@@ -63,7 +63,7 @@ export default function Home() {
         // Math.round(seconds)
         return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
     }
-
+    console.log(songs, "this should be good info")
 
     return (
         <main className={styles.main}>
@@ -102,6 +102,25 @@ export default function Home() {
                     <div></div>
                 </div>
                 <div className={styles.line}></div>
+                {songs?.tracks.items?.slice(0, 5).map((item, index) => {
+                    return (
+                        // {item.album.images[1].url? <><> : null}
+                        <div key={index} className={styles.rowSong}>
+                            <div>{index + 1}</div>
+                            <div className={styles.rowGap}>
+                                <Image alt={"something"} src={item.track.album.images[1].url} height={30} width={70}></Image>
+                                <div style={{ padding: "10px" }} className={styles.column}>
+                                    <div style={{ width: "175px" }}>{item.name}</div>
+                                    <div className={styles.miniTitle}>{item.track.artists.name}</div>
+                                </div>
+                            </div>
+                            <div style={{ width: "175px" }}>{item.track.album.name}</div>
+                            <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.track.duration_ms)}</div>
+                            <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
+
+                        </div>
+                    )
+                })}
 
             </div>
         </main>
