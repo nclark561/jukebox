@@ -63,7 +63,6 @@ export default function Home() {
         // Math.round(seconds)
         return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
     }
-    console.log(songs, "this should be good info")
 
     return (
         <main className={styles.main}>
@@ -110,8 +109,8 @@ export default function Home() {
                             <div className={styles.rowGap}>
                                 <Image alt={"something"} src={item.track.album.images[1].url} height={30} width={70}></Image>
                                 <div style={{ padding: "10px" }} className={styles.column}>
-                                    <div style={{ width: "175px" }}>{item.name}</div>
-                                    <div className={styles.miniTitle}>{item.track.artists.name}</div>
+                                    <div style={{ width: "175px" }}>{item.track.name}</div>
+                                    <div className={styles.miniTitle}>{item.track.artists[0].name}</div>
                                 </div>
                             </div>
                             <div style={{ width: "175px" }}>{item.track.album.name}</div>
