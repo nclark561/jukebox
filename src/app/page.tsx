@@ -17,18 +17,39 @@ export default function Home() {
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
   const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
-  const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
-  // const playlistImages = useMemo(() => {
-  //   if (userPlaylists.length > 0) {
-  //     return Promise.all(userPlaylists.map(async (playlist) => {
-  //       return await getPlaylistImage(playlist.id)
-  //     }))
-  //   }
-  //   return []
-  // }, [userPlaylists])
+  const [images, setImages] = useState<string[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [idArray, setIdArray] = useState<string[]>([]);
+  // const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
+
+  const session = useSession()
+
+  const playlistImages = useMemo(() => {
+    if (idArray?.length > 0) {
+      const result: string[] = []
+      idArray.forEach((item, index) => {
+        new Promise(async (resolve) => {
+          const response = await fetch(`https://api.spotify.com/v1/playlists/${idArray[index]}/images`, {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+            },
+            method: "GET",
+          })
+          const test = await response.json()
+            .catch(err => console.error(err))            
+          result.push(test[0]?.url)
+        })
+      })
+      console.log(result, "")
+      // localStorage.setItem("images", `${JSON.stringify(result)}`)
+      return result
+    }    
+    return []
+  }, [idArray])
 
 
-  // console.log(playlistImages, "these are the images")
   async function handleClick() {
     setTxt('')
     const result = search?.replace(/\s+/g, "+")
@@ -36,14 +57,14 @@ export default function Home() {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.data.user.accessToken}`,
+        Authorization: `Bearer ${session?.data?.user?.accessToken}`,
       },
       method: "GET",
     })
     const test = await response.json()
       .catch(err => console.error(err))
     setResults(test.tracks.items)
-    console.log(test.tracks.items)
+    // console.log(test.tracks.items)
   }
 
   useEffect(() => {
@@ -52,7 +73,7 @@ export default function Home() {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session.data.user.accessToken}`,
+          Authorization: `Bearer ${session?.data?.user?.accessToken}`,
         },
         method: "GET",
       })
@@ -62,31 +83,40 @@ export default function Home() {
     }
     playlists()
   }, [])
+
+
   const playlistFunction = async (id: string) => {
     const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists`, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.data.user.accessToken}`,
+        Authorization: `Bearer ${session.data?.user?.accessToken}`,
       },
       method: "GET",
     })
     const test = await response.json()
       .catch(err => console.error(err))
-    console.log(test, "should be playlists`")
+    //   console.log(test, "good info")
+    // console.log(test, "should be playlists`")
     setUserPlaylists(test.items)
+    if (test.items) {
+      let result: Array = []
+      test.items.map((item: Array) => {
+        // console.log(item, "these are the items")      
+        result.push(item.id)
+      })
+      setIdArray(result)
+    }
   }
 
-
-  const session: any = useSession()
   function millisToMinutesAndSeconds(millis: number) {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     // Math.round(seconds)
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
   }
-
-
+        // console.log(playlistImages[0], "this is a good test ")
+  
   return (
     <main className={styles.main}>
       <Queue queue={queue} />
@@ -145,24 +175,12 @@ export default function Home() {
             </div>
           )
         })}</> : <div className={styles.grid}>
-
-          {userPlaylists.map((playlist, index) => {
-            // playlistImage()
-            console.log(images)
+          {userPlaylists?.map((playlist, index) => {                              
             return (
-              <Link href={`/playlist?id=${playlist.id}`}>
+              <Link key={index} href={`/playlist?id=${playlist.id}`}>
+                <div>kale</div>
+                {/* {playlistImages.length > 1  ? <Image width={650} height={650} alt={'playlist image'} src={`${playlistImages[index]}`}></Image> : <div style={{color:"white"}}>klae</div>} */}
                 <div className={styles.box}>
-                  {/* {
-                    images.map((item, index) => {
-                      return (
-                        <div>
-                          <div>kale</div>
-                          <Image alt={'playlist cover image'} src={item.url} width={50} height={50}></Image>
-                        </div>
-                      )
-                    })
-                  } */}
-
                   <div>{playlist.name}</div>
                 </div>
               </Link>

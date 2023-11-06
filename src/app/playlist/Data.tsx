@@ -32,7 +32,7 @@ export default function Home() {
         })
         const test = await response.json()
             .catch(err => console.error(err))
-        setResults(test.tracks.items)
+        // setResults(test.tracks.items)
         console.log(test.tracks.items)
     }
 
@@ -83,7 +83,6 @@ export default function Home() {
                 }}>
                     <div className={styles.searchInput}>
                         <Image alt={"something"} onClick={() => {
-                            handleClick()
                         }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
                         <input onClick={() => {
 
@@ -101,7 +100,7 @@ export default function Home() {
                     <div></div>
                 </div>
                 <div className={styles.line}></div>
-                {songs?.tracks.items?.slice(0, 5).map((item, index) => {
+                {songs?.tracks.items?.map((item, index) => {
                     return (
                         // {item.album.images[1].url? <><> : null}
                         <div key={index} className={styles.rowSong}>
