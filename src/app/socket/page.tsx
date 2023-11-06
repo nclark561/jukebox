@@ -39,8 +39,8 @@ export default function page() {
   return (
     <div>
       {queue
-        .map((song, index) => (
-          <SongDisplay key={index} song={song} socket={socket} setQueue={setQueue}/>
+        .map((song) => (
+          <SongDisplay key={song.name} song={song} socket={socket} setQueue={setQueue}/>
         ))}
       <div className="flex flex-col">
         <button
