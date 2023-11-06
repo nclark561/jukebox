@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Track } from "@spotify/web-api-ts-sdk";
 import styles from '../queue.module.css'
 import Remote from "../remote";
+import Vote from "../socket/page";
 import { signOut, useSession } from "next-auth/react";
 
 interface QueueProps {
@@ -22,7 +23,9 @@ export default function Queue(props: QueueProps) {
           <li key={index}>{song.name}</li>
         ))}
       </ul>
-
+      <div style={{width:"100%"}}>
+        <Vote />
+      </div>
       {session?.status === 'authenticated' && <Remote session={session} />}
 
     </div>

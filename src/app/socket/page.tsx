@@ -38,7 +38,7 @@ export default function page() {
         .map((song, index) => (
           <SongDisplay key={index} song={song} />
         ))}
-      <div className="flex flex-col">
+      <div className="flex space-ev">
         <button
           onClick={() => {
             socket.emit("create-queue", "queue-room-1979", (response: SuccessfulResponse | ErrorResponse) => {
