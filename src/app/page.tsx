@@ -18,7 +18,7 @@ export default function Home() {
   const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
   const [images, setImages] = useState<string[]>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [idArray, setIdArray] = useState<string[]>([]);
   // const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
 
@@ -43,7 +43,8 @@ export default function Home() {
         })
       })
       // console.log(result, "")
-      // localStorage.setItem("images", `${JSON.stringify(result)}`)
+      // localStorage.setItem("images", `${JSON.stringify(result)}`)\
+      setLoading(false)
       return result
     }
     return []
@@ -115,7 +116,7 @@ export default function Home() {
     // Math.round(seconds)
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
   }
-  console.log(playlistImages[0], "this is a good test ")
+  // console.log(playlistImages[0], "this is a good test ")
   console.log(playlistImages, "this is a good test ")
 
   return (
@@ -176,25 +177,21 @@ export default function Home() {
             </div>
           )
         })}</> : <div className={styles.grid}>
-          {userPlaylists?.map((playlist, index) => {
+          {loading ? <></> : userPlaylists?.map((playlist, index) => {
             return (
               <Album name={playlist.name} id={playlist.id} imageUrl={playlistImages[index]} />
             )
-          })}
+          })}          
         </div>}
-
-
       </div>
     </main>
   );
 }
-
 const Album = ({ id, imageUrl, name }: { id: string; imageUrl?: string; name: string }) => {
   console.log(imageUrl, "this is imsage url")
   return (
-    <Link key={id} href={`/playlist?id=${id}`}>
-      <div>kale</div>
-      {imageUrl ? <Image width={650} height={650} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>klae</div>}
+    <Link key={id} href={`/playlist?id=${id}`}>      
+      {imageUrl ? <Image width={500} height={500} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>klae</div>}
       <div className={styles.box}>
         <div>{name}</div>
       </div>

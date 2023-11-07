@@ -12,6 +12,7 @@
     "@spotify/web-api-ts-sdk": "^1.1.2",
     "next": "latest",
     "next-auth": "^4.23.2",
+    "nodemon": "^3.0.1",
     "react": "latest",
     "react-dom": "latest",
     "socket.io-client": "^4.7.2",
