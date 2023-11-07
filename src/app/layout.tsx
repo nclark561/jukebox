@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Provider from "./context/client-provider";
 import { getServerSession } from "next-auth";
-// import { QueueProvider } from "./providers/queue";
+import { QueueProvider } from "./providers/queue/data";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,8 +25,10 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className={inter.className}>        
-          <Provider session={session}>{children}</Provider>        
+      <body className={inter.className}>
+        <QueueProvider>
+          <Provider session={session}>{children}</Provider>
+        </QueueProvider>
       </body>
     </html>
   );

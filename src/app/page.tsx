@@ -38,14 +38,14 @@ export default function Home() {
             method: "GET",
           })
           const test = await response.json()
-            .catch(err => console.error(err))            
+            .catch(err => console.error(err))
           result.push(test[0]?.url)
         })
       })
-      console.log(result, "")
+      // console.log(result, "")
       // localStorage.setItem("images", `${JSON.stringify(result)}`)
       return result
-    }    
+    }
     return []
   }, [idArray])
 
@@ -115,8 +115,9 @@ export default function Home() {
     // Math.round(seconds)
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
   }
-        // console.log(playlistImages[0], "this is a good test ")
-  
+  console.log(playlistImages[0], "this is a good test ")
+  console.log(playlistImages, "this is a good test ")
+
   return (
     <main className={styles.main}>
       <Queue queue={queue} />
@@ -175,15 +176,9 @@ export default function Home() {
             </div>
           )
         })}</> : <div className={styles.grid}>
-          {userPlaylists?.map((playlist, index) => {                              
+          {userPlaylists?.map((playlist, index) => {
             return (
-              <Link key={index} href={`/playlist?id=${playlist.id}`}>
-                <div>kale</div>
-                {/* {playlistImages.length > 1  ? <Image width={650} height={650} alt={'playlist image'} src={`${playlistImages[index]}`}></Image> : <div style={{color:"white"}}>klae</div>} */}
-                <div className={styles.box}>
-                  <div>{playlist.name}</div>
-                </div>
-              </Link>
+              <Album name={playlist.name} id={playlist.id} imageUrl={playlistImages[index]} />
             )
           })}
         </div>}
@@ -192,4 +187,17 @@ export default function Home() {
       </div>
     </main>
   );
+}
+
+const Album = ({ id, imageUrl, name }: { id: string; imageUrl?: string; name: string }) => {
+  console.log(imageUrl, "this is imsage url")
+  return (
+    <Link key={id} href={`/playlist?id=${id}`}>
+      <div>kale</div>
+      {imageUrl ? <Image width={650} height={650} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>klae</div>}
+      <div className={styles.box}>
+        <div>{name}</div>
+      </div>
+    </Link>
+  )
 }
