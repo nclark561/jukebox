@@ -2,6 +2,7 @@
   "name": "jukebox",
   "version": "0.1.0",
   "private": true,
+  "main": "./server/server.ts",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,11 +11,13 @@
   },
   "dependencies": {
     "@spotify/web-api-ts-sdk": "^1.1.2",
+    "dotenv": "^16.3.1",
     "next": "latest",
     "next-auth": "^4.23.2",
     "nodemon": "^3.0.1",
     "react": "latest",
     "react-dom": "latest",
+    "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "use-state-with-callback": "^3.0.2"
   },
@@ -22,6 +25,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/socket.io": "^3.0.2",
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
