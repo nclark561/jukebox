@@ -38,8 +38,7 @@ export default function page() {
   });
   return (
     <div>
-      {queue
-        .map((song) => (
+      {queue.map((song) => (
           <SongDisplay key={song.name} song={song} socket={socket} setQueue={setQueue}/>
         ))}
       <div className="flex space-ev">

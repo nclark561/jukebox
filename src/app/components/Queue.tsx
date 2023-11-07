@@ -17,12 +17,7 @@ export default function Queue(props: QueueProps) {
       <div className={styles.linkContainer}>
         <div className={styles.link}>Search</div>
         <div className={styles.link}>My playlists</div>
-      </div>
-      <ul>
-        {props.queue.map((song, index) => (
-          <li key={index}>{song.name}</li>
-        ))}
-      </ul>
+      </div>      
       <div style={{width:"100%"}}>
         <Vote />
       </div>
