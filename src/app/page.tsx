@@ -7,8 +7,6 @@ import Image from "next/image";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { debug } from "console";
-import { useGetPlaylistImages } from "./useGetPlaylistImages";
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
@@ -17,98 +15,114 @@ export default function Home() {
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
   const [counter, setCounter] = useState<number>(1);
   const [results, setResults] = useState<Track[]>();
-  const [images, setImages] = useState<string[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [idArray, setIdArray] = useState<string[]>([]);
+  const [spotifyUserId, setSpotifyUserId] = useState<string>()
+  const [images, setImages] = useState<string[]>([])
+  const [playlistsInfo, setPlaylistsInfo] = useState<{ id: string; name: string }[]>([])
   // const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
 
   const session = useSession()
 
-  const playlistImages = useMemo(() => {
-    if (idArray?.length > 0) {
-      const result: string[] = []
-      idArray.forEach((item, index) => {
-        new Promise(async (resolve) => {
-          const response = await fetch(`https://api.spotify.com/v1/playlists/${idArray[index]}/images`, {
+  const playlistImages = useMemo(async () => {
+    if (playlistsInfo.length > 0) {
+      const imageUrls = await Promise.all(playlistsInfo.map((item, index) => {
+        return new Promise<string>(async (resolve, reject) => {
+          try {
+            const response = await fetch(`https://api.spotify.com/v1/playlists/${item.id}/images`, {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+              },
+              method: "GET",
+            })
+            const images = await response.json()
+            resolve(images[0].url)
+          } catch (err) {
+            reject(err)
+          }
+
+        })
+      }))
+      setImages(imageUrls)
+    }
+  }, [playlistsInfo])
+
+  useEffect(() => {
+    if (session?.data) {
+      const playlists = async () => {
+        const response = await fetch(`https://api.spotify.com/v1/me `, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+          },
+          method: "GET",
+        })
+        const spotifyInformation = await response.json()
+          .catch(err => console.error(err))
+        setSpotifyUserId(spotifyInformation.id)
+      }
+
+      playlists()
+    }
+  }, [session])
+
+  useEffect(() => {
+    if (spotifyUserId) {
+      const getPlaylists = async () => {
+        try {
+          const response = await fetch(`https://api.spotify.com/v1/users/${spotifyUserId}/playlists`, {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
-              Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+              Authorization: `Bearer ${session.data?.user?.accessToken}`,
             },
             method: "GET",
           })
-          const test = await response.json()
-            .catch(err => console.error(err))
-          result.push(test[0]?.url)
-        })
-      })
-      // console.log(result, "")
-      // localStorage.setItem("images", `${JSON.stringify(result)}`)\
-      setLoading(false)
-      return result
+          const playlists = await response.json()
+          if (playlists.items) {
+            let playlistsInfo = playlists.items.map((item) => {
+              return { id: item.id, name: item.name }
+            })
+            setLoading(!loading)
+            setPlaylistsInfo(playlistsInfo)
+          }
+        } catch (err) {
+          console.error(err)
+        }
+      }
+      getPlaylists()
     }
-    return []
-  }, [idArray])
+
+  }, [spotifyUserId])
 
 
-  async function handleClick() {
-    setTxt('')
-    const result = search?.replace(/\s+/g, "+")
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${result}&type=track`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.data?.user?.accessToken}`,
-      },
-      method: "GET",
-    })
-    const test = await response.json()
-      .catch(err => console.error(err))
-    setResults(test.tracks.items)
-    // console.log(test.tracks.items)
-  }
 
-  useEffect(() => {
-    const playlists = async () => {
-      const response = await fetch(`https://api.spotify.com/v1/me `, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.data?.user?.accessToken}`,
-        },
-        method: "GET",
-      })
-      const test = await response.json()
-        .catch(err => console.error(err))
-      playlistFunction(test.id)
-    }
-    playlists()
-  }, [])
-
-
-  const playlistFunction = async (id: string) => {
-    const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.data?.user?.accessToken}`,
-      },
-      method: "GET",
-    })
-    const test = await response.json()
-      .catch(err => console.error(err))
-    //   console.log(test, "good info")
-    // console.log(test, "should be playlists`")
-    setUserPlaylists(test.items)
-    if (test.items) {
-      let result: Array = []
-      test.items.map((item: Array) => {
-        // console.log(item, "these are the items")      
-        result.push(item.id)
-      })
-      setIdArray(result)
-    }
-  }
+  // const playlistFunction = async (id: string) => {
+  //   const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists`, {
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${session.data?.user?.accessToken}`,
+  //     },
+  //     method: "GET",
+  //   })
+  //   const test = await response.json()
+  //     .catch(err => console.error(err))
+  //   //   console.log(test, "good info")
+  //   // console.log(test, "should be playlists`")
+  //   setUserPlaylists(test.items)
+  //   if (test.items) {
+  //     let result: Array = []
+  //     test.items.map((item: Array) => {
+  //       // console.log(item, "these are the items")      
+  //       result.push(item.id)
+  //     })
+  //     setIdArray(result)
+  //   }
+  // }
 
   function millisToMinutesAndSeconds(millis: number) {
     var minutes = Math.floor(millis / 60000);
@@ -117,7 +131,8 @@ export default function Home() {
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
   }
   // console.log(playlistImages[0], "this is a good test ")
-  console.log(playlistImages, "this is a good test ")
+
+  console.log(JSON.stringify(playlistImages), "this is a good test ")
 
   return (
     <main className={styles.main}>
@@ -177,23 +192,24 @@ export default function Home() {
             </div>
           )
         })}</> : <div className={styles.grid}>
-          {loading ? <></> : userPlaylists?.map((playlist, index) => {
+          {loading ? <></> : playlistsInfo?.map((playlist, index) => {
             return (
-              <Album name={playlist.name} id={playlist.id} imageUrl={playlistImages[index]} />
+              <Album key={playlist.id} name={playlist.name} id={playlist.id} imageUrl={images[index]} />
             )
-          })}          
+          })}
         </div>}
       </div>
     </main>
   );
 }
 const Album = ({ id, imageUrl, name }: { id: string; imageUrl?: string; name: string }) => {
-  console.log(imageUrl, "this is imsage url")
   return (
-    <Link key={id} href={`/playlist?id=${id}`}>      
-      {imageUrl ? <Image width={500} height={500} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>klae</div>}
-      <div className={styles.box}>
-        <div>{name}</div>
+    <Link key={id} href={`/playlist?id=${id}`}>     
+      {imageUrl ? <Image width={400} height={400} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>kale</div>}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className={styles.box}>
+          <div>{name}</div>
+        </div>
       </div>
     </Link>
   )
