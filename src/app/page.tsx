@@ -49,6 +49,24 @@ export default function Home() {
     }
   }, [playlistsInfo])
 
+
+  async function songSearch() {
+    setTxt('')
+    const result = search?.replace(/\s+/g, "+")
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${result}&type=track`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+      },
+      method: "GET",
+    })
+    const test = await response.json()
+      .catch(err => console.error(err))
+    setResults(test.tracks.items)
+    // console.log(test.tracks.items)
+  }
+
   useEffect(() => {
     if (session?.data) {
       const playlists = async () => {
@@ -86,8 +104,8 @@ export default function Home() {
             let playlistsInfo = playlists.items.map((item) => {
               return { id: item.id, name: item.name }
             })
-            setLoading(!loading)
             setPlaylistsInfo(playlistsInfo)
+            setLoading(!loading)
           }
         } catch (err) {
           console.error(err)
@@ -97,32 +115,6 @@ export default function Home() {
     }
 
   }, [spotifyUserId])
-
-
-
-  // const playlistFunction = async (id: string) => {
-  //   const response = await fetch(`https://api.spotify.com/v1/users/${id}/playlists`, {
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${session.data?.user?.accessToken}`,
-  //     },
-  //     method: "GET",
-  //   })
-  //   const test = await response.json()
-  //     .catch(err => console.error(err))
-  //   //   console.log(test, "good info")
-  //   // console.log(test, "should be playlists`")
-  //   setUserPlaylists(test.items)
-  //   if (test.items) {
-  //     let result: Array = []
-  //     test.items.map((item: Array) => {
-  //       // console.log(item, "these are the items")      
-  //       result.push(item.id)
-  //     })
-  //     setIdArray(result)
-  //   }
-  // }
 
   function millisToMinutesAndSeconds(millis: number) {
     var minutes = Math.floor(millis / 60000);
@@ -149,11 +141,11 @@ export default function Home() {
         </div>
         <form className={styles.row} onSubmit={(evt) => {
           evt.preventDefault()
-          handleClick()
+          songSearch()
         }}>
           <div className={styles.searchInput}>
             <Image alt={"something"} onClick={() => {
-              handleClick()
+              songSearch()
             }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
             <input onClick={() => {
 
@@ -203,10 +195,11 @@ export default function Home() {
   );
 }
 const Album = ({ id, imageUrl, name }: { id: string; imageUrl?: string; name: string }) => {
+  console.log(imageUrl, "this is imsage url")
   return (
-    <Link key={id} href={`/playlist?id=${id}`}>     
-      {imageUrl ? <Image width={400} height={400} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>kale</div>}
-      <div style={{ display: "flex", justifyContent: "center" }}>
+    <Link key={id} href={`/playlist?id=${id}`}>
+      {imageUrl ? <Image width={300} height={300} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>Images</div>}
+      <div className={styles.container}>
         <div className={styles.box}>
           <div>{name}</div>
         </div>

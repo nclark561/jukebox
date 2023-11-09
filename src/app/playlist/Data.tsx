@@ -4,6 +4,7 @@ import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "../components/Queue";
 import styles from '../page.module.css'
 import Image from "next/image";
+import {BreadCrumbs} from "../components/BreadCrumbs";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -64,8 +65,13 @@ export default function Home() {
         return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
     }
 
+    const breadCrumbs = [
+        { name: "Home", url: "/" },
+      ]
+
     return (
         <main className={styles.main}>
+            {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
             <Queue queue={queue} />
             <div className={styles.content}>
                 <div>
@@ -100,6 +106,7 @@ export default function Home() {
                     <div></div>
                 </div>
                 <div className={styles.line}></div>
+                
                 {songs?.tracks.items?.map((item, index) => {
                     return (
                         // {item.album.images[1].url? <><> : null}
