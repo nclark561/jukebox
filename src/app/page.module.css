@@ -3,10 +3,11 @@
     min-height: 100vh;
     height: fit-content;
     color: white;
+    overflow: hidden;
     display: flex;
 }
 .content{
-    
+    margin-left:25px;
     justify-content: center;
     display: flex; 
     width: 100%;
@@ -23,17 +24,30 @@
     display: flex;
 }
 .box{
-    background-color: white;
+    background-color: rgb(67, 67, 67);
     display: flex;
+    margin-left: 10px;
+    margin-top: 10px;
     align-items: center;
     border-radius: 5px;
     justify-content: space-evenly;
-    width: 200px;
+    min-width: 200px;
+    width: fit-content;
+    height: fit-content;
+
     color: black;
-    height: 75px;
+    min-height: 40px;
+}
+.box div{
+    color: white;
+    padding: 8px;
+    
 }
 .grid{
     padding-top: 30px;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: grid;
     color: black;
     place-items: center;
@@ -106,8 +120,14 @@
 .hidden{
     opacity: .5;
 }
+.container{
+    display: flex;
+    justify-content: center;
+    
+    
+}
 .input{
-    width: 300px;
+    width: 400px;
     height: 50px;
     padding-left: 30px;
     font-size: 15px;
