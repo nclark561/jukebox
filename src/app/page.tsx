@@ -4,11 +4,8 @@ import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "./components/Queue";
 import styles from './page.module.css'
 import Image from "next/image";
-// import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { debug } from "console";
-import { useGetPlaylistImages } from "./useGetPlaylistImages";
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
@@ -42,12 +39,11 @@ export default function Home() {
           result.push(test[0]?.url)
         })
       })
-      // console.log(result, "")
-      // localStorage.setItem("images", `${JSON.stringify(result)}`)
       return result
     }
     return []
   }, [idArray])
+
 
 
   async function handleClick() {

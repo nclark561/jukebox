@@ -46,8 +46,10 @@ const sortQueue = (queueId: string) => {
         return
       }
     });
+    console.log(bCount, aCount)
     return bCount - aCount
   });
+  console.log(sortingQueue)
 };
 
 io.on("connection", (socket: any) => {
