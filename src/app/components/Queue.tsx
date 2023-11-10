@@ -15,10 +15,10 @@ export default function Queue(props: QueueProps) {
   const session: any = useSession()
   return (
     <div className={styles.queue}>
-      <div className={styles.linkContainer}>        
-          <div onClick={() => {
-            window.location.reload()
-          }} className={styles.link}>Home</div>        
+      <div className={styles.linkContainer}>
+        <Link href={'/'}>
+          <div className={styles.link}>Home</div>
+        </Link>
         <div className={styles.link}>Search</div>
       </div>
       <input className={styles.input} type="text" name="" id="" />

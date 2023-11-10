@@ -42,7 +42,7 @@ export default function SongDisplay(props: DispSongProps) {
   };
 
   return (
-    <div className={styles.flex}>
+    <div  className={styles.flex}>
       <p style={{ textAlign: "center", width: "200px" }}>{props.song.name}</p>
       <Image className={userVote === 'upvoted' ? 'bg-white' : ''} onClick={() => { handleClick('upvoted') }} alt={'up arrow'} src={'/up.png'} width={30} height={30}></Image>
       {/* <p>{props.song.votes}</p> */}

@@ -1,12 +1,28 @@
 .queue{
     width: 30%;
     min-height: 100vh;
-    height: fit-content;
+    height: 100vh;
     background-color: gray;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+}
+.queueButton{
+    color: white;
+    background-color: rgb(86, 86, 86);
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px;
+    font-size: 15px;
+    
+}
+.queueContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 420px;
+    overflow-y: auto;
 }
 
 .linkContainer{

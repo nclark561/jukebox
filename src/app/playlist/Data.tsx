@@ -4,7 +4,7 @@ import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "../components/Queue";
 import styles from '../page.module.css'
 import Image from "next/image";
-import {BreadCrumbs} from "../components/BreadCrumbs";
+import { BreadCrumbs } from "../components/BreadCrumbs";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -67,7 +67,7 @@ export default function Home() {
 
     const breadCrumbs = [
         { name: "Home", url: "/" },
-      ]
+    ]
 
     return (
         <main className={styles.main}>
@@ -106,26 +106,28 @@ export default function Home() {
                     <div></div>
                 </div>
                 <div className={styles.line}></div>
-                
-                {songs?.tracks.items?.map((item, index) => {
-                    return (
-                        // {item.album.images[1].url? <><> : null}
-                        <div key={index} className={styles.rowSong}>
-                            <div>{index + 1}</div>
-                            <div className={styles.rowGap}>
-                                <Image alt={"something"} src={item.track.album.images[1].url} height={30} width={70}></Image>
-                                <div style={{ padding: "10px" }} className={styles.column}>
-                                    <div style={{ width: "175px" }}>{item.track.name}</div>
-                                    <div className={styles.miniTitle}>{item.track.artists[0].name}</div>
-                                </div>
-                            </div>
-                            <div style={{ width: "175px" }}>{item.track.album.name}</div>
-                            <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.track.duration_ms)}</div>
-                            <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
+                <div style={{overflowY:"auto", height:"100vh"}}>
 
-                        </div>
-                    )
-                })}
+                    {songs?.tracks.items?.map((item, index) => {
+                        return (
+                            // {item.album.images[1].url? <><> : null}
+                            <div key={index} className={styles.rowSong}>
+                                <div>{index + 1}</div>
+                                <div className={styles.rowGap}>
+                                    <Image alt={"something"} src={item.track.album.images[1].url} height={30} width={70}></Image>
+                                    <div style={{ padding: "10px" }} className={styles.column}>
+                                        <div style={{ width: "175px" }}>{item.track.name}</div>
+                                        <div className={styles.miniTitle}>{item.track.artists[0].name}</div>
+                                    </div>
+                                </div>
+                                <div style={{ width: "175px" }}>{item.track.album.name}</div>
+                                <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.track.duration_ms)}</div>
+                                <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
+
+                            </div>
+                        )
+                    })}
+                </div>
 
             </div>
         </main>

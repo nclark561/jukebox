@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { io } from "socket.io-client";
 import { Track } from "@spotify/web-api-ts-sdk";
+import styles from '../queue.module.css'
 import SongDisplay from "./songDisplay";
 
 const socket = io("http://localhost:5678");
@@ -26,23 +27,26 @@ interface ErrorResponse {
 
 export default function page() {
   const [queue, setQueue] = useState<QueueTrack[]>([
-    { name: "Even if she falls", votes: [{voted: 'upvoted', user: 'noah'}, {voted: 'upvoted', user: 'kale'}] },
-    { name: "Old pine", votes: [{voted: 'downvoted', user: 'noah'}, {voted: 'upvoted', user: 'kale'}] },
-    { name: "Landmines", votes: [{voted: 'downvoted', user: 'noah'}, {voted: 'downvoted', user: 'kale'}] },
-    { name: "All apologies", votes: [{voted: 'upvoted', user: 'noah'}] },
-    { name: "Tremors", votes: [{voted: 'downvoted', user: 'noah'}] },
+    { name: "Even if she falls", votes: [{ voted: 'upvoted', user: 'noah' }, { voted: 'upvoted', user: 'kale' }] },
+    { name: "Old pine", votes: [{ voted: 'downvoted', user: 'noah' }, { voted: 'upvoted', user: 'kale' }] },
+    { name: "Landmines", votes: [{ voted: 'downvoted', user: 'noah' }, { voted: 'downvoted', user: 'kale' }] },
+    { name: "All apologies", votes: [{ voted: 'upvoted', user: 'noah' }] },
+    { name: "Tremors", votes: [{ voted: 'downvoted', user: 'noah' }] },
   ]);
 
   socket.on("connect", () => {
     console.log(socket.id);
   });
   return (
-    <div>
-      {queue.map((song) => (
-          <SongDisplay key={song.name} song={song} socket={socket} setQueue={setQueue}/>
+    <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%", alignItems: "center" }}>
+      <div className={styles.queueContainer}>
+        {queue.map((song) => (
+          <SongDisplay key={song.name} song={song} socket={socket} setQueue={setQueue} />
         ))}
+      </div>
       <div className="flex space-ev">
         <button
+        className={styles.queueButton}
           onClick={() => {
             socket.emit("create-queue", "queue-room-1979", queue, (response: SuccessfulResponse | ErrorResponse) => {
               console.log(response);
@@ -52,12 +56,12 @@ export default function page() {
         >
           Create Queue
         </button>
-        <button onClick={() => {
+        <button className={styles.queueButton} onClick={() => {
           socket.emit("join-queue", "queue-room-1979", (response: SuccessfulResponse) => {
             console.log(response.message)
           })
         }}>Join Queue</button>
-        <button onClick={() => {
+        <button className={styles.queueButton} onClick={() => {
           socket.emit("delete-queue", "queue-room-1979", (response: Partial<SuccessfulResponse>) => {
             console.log(response)
           })
