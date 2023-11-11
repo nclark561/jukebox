@@ -7,10 +7,13 @@ import Image from "next/image";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5678")
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
-  const [queue, setQueue] = useState<Track[]>([]);
+  const [queue, setQueue] = useState<QueueTrack[]>([]);
   const [txt, setTxt] = useState<string>();
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
   const [counter, setCounter] = useState<number>(1);
@@ -21,6 +24,30 @@ export default function Home() {
   const [images, setImages] = useState<string[]>([])
   const [playlistsInfo, setPlaylistsInfo] = useState<{ id: string; name: string }[]>([])
   // const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
+
+  socket.on("connect", () => {
+    console.log(socket.id);
+
+    const room = localStorage.getItem("room")
+    if (room) {
+      socket.emit("get-queue", room, (response: {message: string, queue: QueueTrack[]} | { errorMsg: string} ) => {
+        console.log(response)
+        if ("queue" in response) setQueue(response.queue)
+      })
+    }
+  });
+
+  const addSong = (song: Track) => {
+    const room = localStorage.getItem("room")
+
+    socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[]} | { errorMsg: string }) => {
+      console.log(response)
+      if ("queue" in response) setQueue(response.queue)
+      if ("errorMsg" in response) alert(response.errorMsg)
+    })
+  }
+
+  console.log(queue)
 
   const session = useSession()
 
@@ -124,11 +151,9 @@ export default function Home() {
   }
   // console.log(playlistImages[0], "this is a good test ")
 
-  console.log(JSON.stringify(playlistImages), "this is a good test ")
-
   return (
     <main className={styles.main}>
-      <Queue queue={queue} />
+      <Queue queue={queue} setQueue={setQueue} socket={socket}/>
       <div className={styles.content}>
         <div>
           {session && (
@@ -179,8 +204,7 @@ export default function Home() {
               </div>
               <div style={{ width: "175px" }}>{item.album.name}</div>
               <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.duration_ms)}</div>
-              <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
-
+              <Image onClick={() => addSong(item)} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
             </div>
           )
         })}</> : <div className={styles.grid}>
@@ -195,7 +219,6 @@ export default function Home() {
   );
 }
 const Album = ({ id, imageUrl, name }: { id: string; imageUrl?: string; name: string }) => {
-  console.log(imageUrl, "this is imsage url")
   return (
     <Link key={id} href={`/playlist?id=${id}`}>
       {imageUrl ? <Image width={300} height={300} alt={'playlist image'} src={imageUrl}></Image> : <div style={{ color: "white" }}>Images</div>}

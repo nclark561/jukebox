@@ -11,14 +11,39 @@ import Link from "next/link";
 import { debug } from "console";
 import { useSearchParams } from "next/navigation";
 import { useGetPlaylistImages } from "../useGetPlaylistImages";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5678")
 
 export default function Home() {
     const searchParams = useSearchParams();
     const playlistId = searchParams.get("id");
     const [search, setSearch] = useState<string | undefined>();
-    const [queue, setQueue] = useState<Track[]>([]);
+    const [queue, setQueue] = useState<QueueTrack[]>([]);
     const [txt, setTxt] = useState<string>();
     const [songs, setSongs] = useState<string[]>()
+
+    socket.on("connect", () => {
+        console.log(socket.id);
+    
+        const room = localStorage.getItem("room")
+        if (room) {
+          socket.emit("get-queue", room, (response: {message: string, queue: QueueTrack[]} | { errorMsg: string} ) => {
+            console.log(response)
+            if ("queue" in response) setQueue(response.queue)
+          })
+        }
+      });
+
+    const addSong = (song: Track) => {
+        const room = localStorage.getItem("room")
+    
+        socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[]} | { errorMsg: string }) => {
+          console.log(response)
+          if ("queue" in response) setQueue(response.queue)
+          if ("errorMsg" in response) alert(response.errorMsg)
+        })
+      }
 
     async function handleClick() {
         setTxt('')
@@ -34,7 +59,7 @@ export default function Home() {
         const test = await response.json()
             .catch(err => console.error(err))
         // setResults(test.tracks.items)
-        console.log(test.tracks.items)
+        // console.log(test.tracks.items)
     }
 
     useEffect(() => {
@@ -49,7 +74,7 @@ export default function Home() {
             })
             const test = await response.json()
                 .catch(err => console.error(err))
-            console.log(test.tracks.items, "this is a test of songs")
+            // console.log(test.tracks.items, "this is a test of songs")
             setSongs(test)
 
         }
@@ -72,7 +97,7 @@ export default function Home() {
     return (
         <main className={styles.main}>
             {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
-            <Queue queue={queue} />
+            <Queue queue={queue} socket={socket} setQueue={setQueue}/>
             <div className={styles.content}>
                 <div>
                     {session && (
@@ -122,7 +147,7 @@ export default function Home() {
                                 </div>
                                 <div style={{ width: "175px" }}>{item.track.album.name}</div>
                                 <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.track.duration_ms)}</div>
-                                <Image onClick={() => setQueue(prev => [...prev, item])} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
+                                <Image onClick={() => addSong(item.track)} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
 
                             </div>
                         )

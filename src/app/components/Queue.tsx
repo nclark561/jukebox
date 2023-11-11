@@ -4,11 +4,13 @@ import { Track } from "@spotify/web-api-ts-sdk";
 import styles from '../queue.module.css'
 import Link from "next/link";
 import Remote from "../remote";
-import Vote from "../socket/page";
+import Vote from "../socket/Vote";
 import { signOut, useSession } from "next-auth/react";
 
 interface QueueProps {
-  queue: Track[]
+  queue: QueueTrack[]
+  setQueue: React.Dispatch<React.SetStateAction<QueueTrack[]>>
+  socket: any
 }
 
 export default function Queue(props: QueueProps) {
@@ -23,7 +25,7 @@ export default function Queue(props: QueueProps) {
       </div>
       <input className={styles.input} type="text" name="" id="" />
       <div style={{ width: "100%" }}>
-        <Vote />
+        <Vote socket={props.socket} setQueue={props.setQueue} queue={props.queue}/>
       </div>
       {session?.status === 'authenticated' && <Remote session={session} />}
 

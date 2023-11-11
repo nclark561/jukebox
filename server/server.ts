@@ -65,7 +65,7 @@ io.on("connection", (socket: any) => {
 
       cb({
         message: `Created ${room}`,
-        queue: queues.filter((q: any) => q.id === room),
+        room: queues.filter((q: any) => q.id === room)[0].id,
       });
     }
   });
@@ -93,6 +93,33 @@ io.on("connection", (socket: any) => {
     }
     sortQueue(room)
     cb({vote: currVote?.voted, message: 'Successfully voted', currQueue})
+  })
+  socket.on("add-song", (room: string, song: Track, user: string, cb: any) => {
+    if (!room) {
+      cb({ errorMsg: 'room doesnt exist '})
+      return
+    }
+    const currQueue = queues.find(e => e.id === room)
+    if (!currQueue) {
+      cb({ errorMsg: 'queue does not exist' })
+      return
+    }
+    if (currQueue?.queue.filter(e => e.id === song.id).length > 0) {
+      cb({ errorMsg: 'song already in queue' })
+      return
+    }
+    const currSong = { ...song, votes: []}
+    currQueue?.queue.push(currSong)
+    sortQueue(room)
+    cb({ message: 'Song Added', queue: currQueue?.queue })
+  })
+  socket.on("get-queue", (room: string, cb: any) => {
+    const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    if (!currQueue) {
+      cb({ errorMsg: 'queue does not exist'})
+      return
+    }
+    cb({ message: 'queue recieved', queue: currQueue.queue})
   })
   socket.on("disconnecting", () => {
     console.log(socket.rooms);
