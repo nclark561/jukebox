@@ -18,6 +18,7 @@ interface QueueTrack extends Track {
 
 interface Queue {
   id: string;
+  accessToken: string
   queue: QueueTrack[];
 }
 
@@ -54,13 +55,13 @@ const sortQueue = (queueId: string) => {
 
 io.on("connection", (socket: any) => {
   console.log(socket.id);
-  socket.on("create-queue", (room: string, queue: QueueTrack[], cb: any) => {
+  socket.on("create-queue", (room: string, queue: QueueTrack[], accessToken: string, cb: any) => {
     if (queues.filter((q: any) => q.id === room).length > 0) {
       cb({ errorMsg: "room name already taken" });
     } else {
       socket.join(room);
 
-      queues.push({ id: room, queue });
+      queues.push({ id: room, accessToken, queue });
       console.log(queues);
 
       cb({
