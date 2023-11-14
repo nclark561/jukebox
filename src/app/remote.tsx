@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import styles from './queue.module.css'
 import Image from "next/image";
 
-export default function Remote({ session }: { session: any }) {
+interface RemoteProps { session: any, socket: any, setQueue:React.Dispatch<React.SetStateAction<QueueTrack[]>> }
+
+export default function Remote({ session, socket, setQueue }: RemoteProps) {
   const [device, setDevice] = useState();
   const [play, setPlay] = useState(true);
 
@@ -38,7 +40,13 @@ export default function Remote({ session }: { session: any }) {
     <div className={styles.playContainer}>
       <Image src={'/leftArrow.png'} alt={'left arrow'} height={50} width={50} />
       {play ? <Image onClick={() => {handleClick('play'); setPlay(!play)}} src={'/play.png'} alt={'left arrow'} height={50} width={50} /> : <Image src={'/pause.png'} alt={'pause button'} onClick={() =>{handleClick('pause'); setPlay(!play)} } height={50} width={50}></Image>}
-      <Image src={'/rightArrow.png'} alt={'left arrow'} height={50} width={50} />
+      <Image onClick={() => {
+        const room = localStorage.getItem("room")
+        socket.emit("push-to-queue", room, (response: any) => {
+          console.log(response)
+          if ("queue" in response) setQueue(response.queue)
+        })
+      }} src={'/rightArrow.png'} alt={'right arrow'} height={50} width={50} />
     </div>
   );
 }

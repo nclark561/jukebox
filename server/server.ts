@@ -53,6 +53,21 @@ const sortQueue = (queueId: string) => {
   console.log(sortingQueue)
 };
 
+const pushToSpotifyQueue = (song: QueueTrack, accessToken: string) => {
+  fetch(`https://api.spotify.com/v1/me/player/queue?uri=spotify%3Atrack%3A${song.id}`, {
+    method: "Post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    }
+  })
+  .then(() => {
+    console.log('successfully added to queue')
+  })
+  .catch(err => console.error(err))
+}
+
 io.on("connection", (socket: any) => {
   console.log(socket.id);
   socket.on("create-queue", (room: string, queue: QueueTrack[], accessToken: string, cb: any) => {
@@ -121,6 +136,14 @@ io.on("connection", (socket: any) => {
       return
     }
     cb({ message: 'queue recieved', queue: currQueue.queue})
+  })
+  socket.on("push-to-queue", (room: string, cb: any) => {
+    const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    const nextSong = currQueue.queue[0]
+    pushToSpotifyQueue(nextSong, currQueue.accessToken)
+    currQueue.queue.shift()
+    console.log(currQueue.queue)
+    cb({ message: 'successfully added', queue: currQueue.queue })
   })
   socket.on("disconnecting", () => {
     console.log(socket.rooms);
