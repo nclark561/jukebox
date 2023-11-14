@@ -1,5 +1,8 @@
 {
     "extends": "../tsconfig.json",
     "include": ["."],
-    "compilerOptions": { "module": "commonjs" }
+    "compilerOptions": { 
+        "module": "Node16",
+        "moduleResolution": "Node16" 
+    }
 }
