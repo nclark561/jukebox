@@ -25,22 +25,27 @@ export default function Home() {
   const [playlistsInfo, setPlaylistsInfo] = useState<{ id: string; name: string }[]>([])
   // const { images, loading } = useGetPlaylistImages(userPlaylists.map((item) => item.id))
 
-  socket.on("connect", () => {
-    console.log(socket.id);
 
+
+
+  useEffect(() => {
     const room = localStorage.getItem("room")
     if (room) {
-      socket.emit("get-queue", room, (response: {message: string, queue: QueueTrack[]} | { errorMsg: string} ) => {
+      socket.emit("get-queue", room, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
         console.log(response)
         if ("queue" in response) setQueue(response.queue)
       })
     }
+  }, [])
+  socket.on("connect", () => {
+    console.log(socket.id);
   });
+
 
   const addSong = (song: Track) => {
     const room = localStorage.getItem("room")
 
-    socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[]} | { errorMsg: string }) => {
+    socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
       console.log(response)
       if ("queue" in response) setQueue(response.queue)
       if ("errorMsg" in response) alert(response.errorMsg)
@@ -153,7 +158,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <Queue queue={queue} setQueue={setQueue} socket={socket}/>
+      <Queue queue={queue} setQueue={setQueue} socket={socket} />
       <div className={styles.content}>
         <div>
           {session && (
@@ -196,7 +201,7 @@ export default function Home() {
             <div key={index} className={styles.rowSong}>
               <div>{index + 1}</div>
               <div className={styles.rowGap}>
-                <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
+                {/* <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image> */}
                 <div style={{ padding: "10px" }} className={styles.column}>
                   <div style={{ width: "175px" }}>{item.name}</div>
                   <div className={styles.miniTitle}>{item.artists[0].name}</div>

@@ -23,9 +23,8 @@ export default function Home() {
     const [txt, setTxt] = useState<string>();
     const [songs, setSongs] = useState<string[]>()
 
-    socket.on("connect", () => {
-        console.log(socket.id);
 
+    useEffect(() => {
         const room = localStorage.getItem("room")
         if (room) {
             socket.emit("get-queue", room, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
@@ -33,7 +32,11 @@ export default function Home() {
                 if ("queue" in response) setQueue(response.queue)
             })
         }
+    }, [])
+    socket.on("connect", () => {
+        console.log(socket.id);
     });
+
 
     const addSong = (song: Track) => {
         const room = localStorage.getItem("room")
@@ -133,7 +136,7 @@ export default function Home() {
                 <div className={styles.line}></div>
                 <div style={{ overflowY: "auto", height: "100vh" }}>
 
-                    {songs?.tracks.items?.map((item, index) => {                        
+                    {songs?.tracks.items?.map((item, index) => {
                         return (
                             // {item.album.images[1].url? <><> : null}
                             <div key={index} className={styles.rowSong}>
