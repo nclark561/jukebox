@@ -1,5 +1,5 @@
 .queue{
-    width: 30%;
+    width: 40%;
     min-height: 100vh;
     height: 100vh;
     background-color: gray;
@@ -19,8 +19,9 @@
 }
 .queueContainer{
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    width: 100%;
+    flex-direction: column;    
+    margin-top: 20px;
     height: 420px;
     overflow-y: auto;
 }

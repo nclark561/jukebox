@@ -25,25 +25,25 @@ export default function Home() {
 
     socket.on("connect", () => {
         console.log(socket.id);
-    
+
         const room = localStorage.getItem("room")
         if (room) {
-          socket.emit("get-queue", room, (response: {message: string, queue: QueueTrack[]} | { errorMsg: string} ) => {
-            console.log(response)
-            if ("queue" in response) setQueue(response.queue)
-          })
+            socket.emit("get-queue", room, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
+                console.log(response)
+                if ("queue" in response) setQueue(response.queue)
+            })
         }
-      });
+    });
 
     const addSong = (song: Track) => {
         const room = localStorage.getItem("room")
-    
-        socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[]} | { errorMsg: string }) => {
-          console.log(response)
-          if ("queue" in response) setQueue(response.queue)
-          if ("errorMsg" in response) alert(response.errorMsg)
+
+        socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
+            console.log(response)
+            if ("queue" in response) setQueue(response.queue)
+            if ("errorMsg" in response) alert(response.errorMsg)
         })
-      }
+    }
 
     async function handleClick() {
         setTxt('')
@@ -97,7 +97,7 @@ export default function Home() {
     return (
         <main className={styles.main}>
             {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
-            <Queue queue={queue} socket={socket} setQueue={setQueue}/>
+            <Queue queue={queue} socket={socket} setQueue={setQueue} />
             <div className={styles.content}>
                 <div>
                     {session && (
@@ -131,9 +131,9 @@ export default function Home() {
                     <div></div>
                 </div>
                 <div className={styles.line}></div>
-                <div style={{overflowY:"auto", height:"100vh"}}>
+                <div style={{ overflowY: "auto", height: "100vh" }}>
 
-                    {songs?.tracks.items?.map((item, index) => {
+                    {songs?.tracks.items?.map((item, index) => {                        
                         return (
                             // {item.album.images[1].url? <><> : null}
                             <div key={index} className={styles.rowSong}>
