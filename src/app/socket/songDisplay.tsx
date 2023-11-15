@@ -50,9 +50,9 @@ export default function SongDisplay(props: DispSongProps) {
         <p style={{  width: "200px", fontSize: "13px" }}>{props.song.name}</p>
         <p style={{  width: "200px", fontSize: "13px" }}>{props.song.artists[0].name}</p>
       </div>
-      <Image className={userVote === 'upvoted' ? 'bg-white' : ''} onClick={() => { handleClick('upvoted') }} alt={'up arrow'} src={'/up.png'} width={30} height={30}></Image>
+      <Image  onClick={() => { handleClick('upvoted') }} alt={'up arrow'} src={userVote === "upvoted" ? '/upW.png' : '/upB.png'} width={20} height={20}></Image>
       {/* <p>{props.song.votes}</p> */}
-      <Image className={userVote === 'downvoted' ? 'bg-white' : ''} onClick={() => handleClick('downvoted')} alt={'up arrow'} src={'/down.png'} width={30} height={30}></Image>
+      <Image onClick={() => handleClick('downvoted')} alt={'up arrow'} src={userVote === "downvoted" ? '/downW.png' : '/downB.png'} width={20} height={20}></Image>
       <div className="flex justify-between">
       </div>
     </div>
