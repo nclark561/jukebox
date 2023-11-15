@@ -228,10 +228,11 @@ export default function Home() {
               setSearch(event?.target.value)
             }} type="text" />
           </div>
-            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div></div>}
+            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{paddingLeft:"10px"}}>{spotifyUserId}</div></div>}
 
           </form>
         </div>
+            {/* <div>Create a queue and get started!</div> */}
         <div className={styles.topRow}>
           <div>Title</div>
           <div></div>
