@@ -250,7 +250,7 @@ export default function Home() {
                 <div key={index} className={styles.rowSong}>
                   <div>{index + 1}</div>
                   <div className={styles.rowGap}>
-                    {/* <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image> */}
+                    <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
                     <div style={{ padding: "10px" }} className={styles.column}>
                       <div style={{ width: "175px" }}>{item.name}</div>
                       <div className={styles.miniTitle}>

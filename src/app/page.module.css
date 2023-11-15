@@ -9,8 +9,7 @@
 
 .content {
     margin-left: 25px;
-    overflow-y: scroll;
-    justify-content: center;
+    overflow-y: scroll;    
     display: flex;
     width: 100%;
     height: fit-content;

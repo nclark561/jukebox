@@ -58,7 +58,7 @@ export default function Vote(props: VoteProps) {
                     if ("errorMsg" in response) alert(response.errorMsg);
                     if ("room" in response)
                       localStorage.setItem("room", response.room);
-                  }
+                  }                  
                 );
               }
             }
