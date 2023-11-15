@@ -32,7 +32,7 @@ export default function Queue(props: QueueProps) {
       <div style={{ width: "100%" }}>
         <Vote socket={props.socket} setQueue={props.setQueue} queue={props.queue}/>
       </div>
-      {session?.status === 'authenticated' && <Remote session={session} />}
+      {session?.status === 'authenticated' && <Remote session={session} socket={props.socket} setQueue={props.setQueue}/>}
 
     </div>
   );

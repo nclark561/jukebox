@@ -4,13 +4,11 @@ import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "../components/Queue";
 import styles from '../page.module.css'
 import Image from "next/image";
-import { BreadCrumbs } from "../components/BreadCrumbs";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { debug } from "console";
 import { useSearchParams } from "next/navigation";
-import { useGetPlaylistImages } from "../useGetPlaylistImages";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:5678")
@@ -136,7 +134,7 @@ export default function Home() {
                 <div className={styles.line}></div>
                 <div style={{ overflowY: "auto", height: "100vh" }}>
 
-                    {songs?.tracks.items?.map((item, index) => {
+                    {songs?.tracks.items?.map((item: any, index: number) => {
                         return (
                             // {item.album.images[1].url? <><> : null}
                             <div key={index} className={styles.rowSong}>
