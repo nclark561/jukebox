@@ -9,6 +9,7 @@ import { signOut, useSession } from "next-auth/react";
 
 interface QueueProps {
   queue: QueueTrack[]
+  setSearchToggle: any
   setQueue: React.Dispatch<React.SetStateAction<QueueTrack[]>>
   socket: any
 }
@@ -19,9 +20,13 @@ export default function Queue(props: QueueProps) {
     <div className={styles.queue}>
       <div className={styles.linkContainer}>
         <Link href={'/'}>
-          <div className={styles.link}>Home</div>
+          <div onClick={() => {
+          props.setSearchToggle(false)
+        }} className={styles.link}>Home</div>
         </Link>
-        <div className={styles.link}>Search</div>
+        <div onClick={() => {
+          props.setSearchToggle(true)
+        }} className={styles.link}>Search</div>
       </div>
       <input className={styles.input} type="text" name="" id="" />
       <div style={{ width: "100%" }}>

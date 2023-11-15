@@ -13,6 +13,7 @@ const socket = io("http://localhost:5678")
 
 export default function Home() {
   const [search, setSearch] = useState<string | undefined>();
+  const [searchToggle, setSearchToggle] = useState<any>(false);
   const [queue, setQueue] = useState<QueueTrack[]>([]);
   const [txt, setTxt] = useState<string>();
   const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
@@ -158,22 +159,24 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <Queue queue={queue} setQueue={setQueue} socket={socket} />
+      <Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
       <div className={styles.content}>
-        <div>
-          {session && (
-            <div>
-              <img src={session?.data?.user?.picture}></img>
+        <div className={styles.logoutContainer}>
+          <div>
+            {session && (
+              <div>
+                <img src={session?.data?.user?.picture}></img>
 
-              {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <Link href='/login'>Login</Link>}
-            </div>
-          )}
-        </div>
-        <form className={styles.row} onSubmit={(evt) => {
-          evt.preventDefault()
-          songSearch()
-        }}>
-          <div className={styles.searchInput}>
+                {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <Link href='/login'>Login</Link>}
+              </div>
+            )}
+          </div>
+          <form className={styles.row} onSubmit={(evt) => {
+            evt.preventDefault()
+            songSearch()
+          }}>
+
+            {searchToggle ? <> <div className={styles.searchInput}>
             <Image alt={"something"} onClick={() => {
               songSearch()
             }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
@@ -184,7 +187,10 @@ export default function Home() {
               setSearch(event?.target.value)
             }} type="text" />
           </div>
-        </form>
+            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div></div>}
+
+          </form>
+        </div>
         <div className={styles.topRow}>
           <div>Title</div>
           <div></div>
