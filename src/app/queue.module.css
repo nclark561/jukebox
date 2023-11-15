@@ -17,6 +17,11 @@
     font-size: 15px;
     
 }
+.flex{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
 .queueContainer{
     display: flex;
     width: 100%;
@@ -48,13 +53,17 @@
     display: flex;    
     align-items: center;    
     padding: 20px;
+    font-size: 18px;
     font-weight: 600;
     letter-spacing: 1px;
+    width: 100%;
+    color: rgb(229, 228, 228);
     height: 40px;
 }
 
 .link:hover{
-    background-color: rgb(200, 199, 199);
+    color: white;
+    cursor: pointer;
 }
 .playContainer{
     display: flex;

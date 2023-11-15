@@ -4,6 +4,7 @@ import { Track } from "@spotify/web-api-ts-sdk";
 import styles from '../queue.module.css'
 import Link from "next/link";
 import Remote from "../remote";
+import Image from "next/image";
 import Vote from "../socket/Vote";
 import { signOut, useSession } from "next-auth/react";
 
@@ -19,20 +20,26 @@ export default function Queue(props: QueueProps) {
   return (
     <div className={styles.queue}>
       <div className={styles.linkContainer}>
-        <Link href={'/'}>
+        <div className={styles.flex}>
+          <Image src={'/home.png'} alt={''} height={25} width={25} />
+          <Link href={'/'}>
+            <div onClick={() => {
+              props.setSearchToggle(false)
+            }} className={styles.link}>Home</div>
+          </Link>
+        </div>
+        <div className={styles.flex}>
+          <Image src={'/search1.png'} alt={''} height={25} width={25} />
           <div onClick={() => {
-          props.setSearchToggle(false)
-        }} className={styles.link}>Home</div>
-        </Link>
-        <div onClick={() => {
-          props.setSearchToggle(true)
-        }} className={styles.link}>Search</div>
+            props.setSearchToggle(true)
+          }} className={styles.link}>Search</div>
+        </div>
       </div>
       <input className={styles.input} type="text" name="" id="" />
       <div style={{ width: "100%" }}>
-        <Vote socket={props.socket} setQueue={props.setQueue} queue={props.queue}/>
+        <Vote socket={props.socket} setQueue={props.setQueue} queue={props.queue} />
       </div>
-      {session?.status === 'authenticated' && <Remote session={session} socket={props.socket} setQueue={props.setQueue}/>}
+      {session?.status === 'authenticated' && <Remote session={session} socket={props.socket} setQueue={props.setQueue} />}
 
     </div>
   );
