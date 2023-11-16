@@ -88,6 +88,7 @@ export default function Vote(props: VoteProps) {
               "queue-room-1979",
               (response: Partial<SuccessfulResponse>) => {
                 console.log(response);
+                setQueue([])
               }
             );
             localStorage.clear();

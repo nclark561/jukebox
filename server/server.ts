@@ -53,19 +53,24 @@ const sortQueue = (queueId: string) => {
   console.log(sortingQueue)
 };
 
-const pushToSpotifyQueue = (song: QueueTrack, accessToken: string) => {
-  fetch(`https://api.spotify.com/v1/me/player/queue?uri=spotify%3Atrack%3A${song.id}`, {
-    method: "Post",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    }
-  })
-  .then(() => {
-    console.log('successfully added to queue')
-  })
-  .catch(err => console.error(err))
+const playNextSong =  async (song: QueueTrack, accessToken: string) => {
+  try {
+    await fetch(`https://api.spotify.com/v1/me/player/play`, {
+      method: "Put",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        uris: [song.uri]
+      })
+    })
+    console.log('queue playing successfully')
+    return () => new Promise(resolve => setTimeout(resolve, song.duration_ms));
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 io.on("connection", (socket: any) => {
@@ -97,9 +102,9 @@ io.on("connection", (socket: any) => {
     queues.splice(delQueue, 1);
     cb({ message: `Ended ${room}`, queues });
   });
-  socket.on("vote", (room: string, song: string, vote: string, user: string, cb: any) => {
+  socket.on("vote", (room: string, song: QueueTrack, vote: string, user: string, cb: any) => {
     const currQueue = queues.find(e => e.id === room)
-    const currSong = currQueue?.queue.find(e => e.name === song)
+    const currSong = currQueue?.queue.find(e => e.id === song.id)
     let currVote = currSong?.votes.find(e => e.user === user)
     if (currVote) {
       currVote.voted = vote
@@ -137,13 +142,28 @@ io.on("connection", (socket: any) => {
     }
     cb({ message: 'queue recieved', queue: currQueue.queue})
   })
-  socket.on("push-to-queue", (room: string, cb: any) => {
+  socket.on("play-queue", async (room: string, cb: any) => {
     const currQueue = queues.filter((e: Queue) => e.id === room)[0]
-    const nextSong = currQueue.queue[0]
-    pushToSpotifyQueue(nextSong, currQueue.accessToken)
-    currQueue.queue.shift()
-    console.log(currQueue.queue)
-    cb({ message: 'successfully added', queue: currQueue.queue })
+    while (currQueue.queue.length > 0) {
+      const nextSong = currQueue.queue[0]
+      const playingQueue = await playNextSong(nextSong, currQueue.accessToken)
+      if (playingQueue) {
+        currQueue.queue.shift()
+        console.log(currQueue.queue)
+        cb({ message: 'successfully played', queue: currQueue.queue })
+        await playingQueue()
+      }
+    }
+  })
+  socket.on("get-vote", (room: string, song: QueueTrack, user:string, cb: any) => {
+    const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    const currSong = currQueue?.queue.find(e => e.id === song.id)
+    let currVote = currSong?.votes.find(e => e.user === user)
+    if (currVote) {
+      cb({ voted: currVote.voted })
+    } else {
+      cb({ voted: 'neutral' })
+    }
   })
   socket.on("disconnecting", () => {
     console.log(socket.rooms);

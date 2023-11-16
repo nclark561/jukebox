@@ -42,7 +42,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
       {play ? <Image onClick={() => {handleClick('play'); setPlay(!play)}} src={'/play.png'} alt={'left arrow'} height={50} width={50} /> : <Image src={'/pause.png'} alt={'pause button'} onClick={() =>{handleClick('pause'); setPlay(!play)} } height={50} width={50}></Image>}
       <Image onClick={() => {
         const room = localStorage.getItem("room")
-        socket.emit("push-to-queue", room, (response: any) => {
+        socket.emit("play-queue", room, (response: any) => {
           console.log(response)
           if ("queue" in response) setQueue(response.queue)
         })

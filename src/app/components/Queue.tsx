@@ -1,6 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Track } from "@spotify/web-api-ts-sdk";
 import styles from '../queue.module.css'
 import Link from "next/link";
 import Remote from "../remote";
