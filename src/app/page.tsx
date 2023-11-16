@@ -18,6 +18,7 @@ export default function Home() {
   const [queue, setQueue] = useState<QueueTrack[]>([]);
   const [txt, setTxt] = useState<string>();
   const [results, setResults] = useState<Track[]>();
+  // const [displayName, setDisplayName] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [spotifyUserId, setSpotifyUserId] = useState<string>();
   const [images, setImages] = useState<string[]>([]);
@@ -149,6 +150,7 @@ export default function Home() {
             .json()
             .catch((err) => console.error(err));
           setSpotifyUserId(spotifyInformation.id);
+          // setDisplayName(spotifyInformation.display_name)
         }
       };
 
@@ -228,7 +230,7 @@ export default function Home() {
               setSearch(event?.target.value)
             }} type="text" />
           </div>
-            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{paddingLeft:"10px"}}>{spotifyUserId}</div></div>}
+            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{paddingLeft:"10px"}}>kale</div></div>}
 
           </form>
         </div>
