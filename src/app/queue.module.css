@@ -25,7 +25,7 @@
 .queueContainer{
     display: flex;
     width: 100%;
-    flex-direction: column-reverse;    
+    flex-direction: column;    
     justify-content: flex-end;
     margin-top: 20px;
     height: 420px;
