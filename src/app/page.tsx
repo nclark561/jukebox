@@ -18,7 +18,7 @@ export default function Home() {
   const [queue, setQueue] = useState<QueueTrack[]>([]);
   const [txt, setTxt] = useState<string>();
   const [results, setResults] = useState<Track[]>();
-  // const [displayName, setDisplayName] = useState<string>();
+  const [displayName, setDisplayName] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [spotifyUserId, setSpotifyUserId] = useState<string>();
   const [images, setImages] = useState<string[]>([]);
@@ -150,7 +150,7 @@ export default function Home() {
             .json()
             .catch((err) => console.error(err));
           setSpotifyUserId(spotifyInformation.id);
-          // setDisplayName(spotifyInformation.display_name)
+          setDisplayName(spotifyInformation.display_name)
         }
       };
 
@@ -201,7 +201,7 @@ export default function Home() {
   // console.log(playlistImages[0], "this is a good test ")
 
   return (
-    <main className={styles.main}>      
+    <main className={styles.main}>
       <Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
       <div className={styles.content}>
         <div className={styles.logoutContainer}>
@@ -220,21 +220,21 @@ export default function Home() {
           }}>
 
             {searchToggle ? <> <div className={styles.searchInput}>
-            <Image alt={"something"} onClick={() => {
-              songSearch()
-            }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
-            <input onClick={() => {
+              <Image alt={"something"} onClick={() => {
+                songSearch()
+              }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
+              <input onClick={() => {
 
-            }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
-              setTxt(event.target.value)
-              setSearch(event?.target.value)
-            }} type="text" />
-          </div>
-            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{paddingLeft:"10px"}}>kale</div></div>}
+              }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
+                setTxt(event.target.value)
+                setSearch(event?.target.value)
+              }} type="text" />
+            </div>
+            </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{ paddingLeft: "10px" }}>{displayName}</div></div>}
 
           </form>
         </div>
-            {/* <div>Create a queue and get started!</div> */}
+        {/* <div>Create a queue and get started!</div> */}
         <div className={styles.topRow}>
           <div>Title</div>
           <div></div>
@@ -254,14 +254,14 @@ export default function Home() {
                   <div className={styles.rowGap}>
                     <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
                     <div style={{ padding: "10px" }} className={styles.column}>
-                      <div style={{ width: "175px" }}>{item.name}</div>
+                      <div className={styles.songTitle}>{item.name}</div>
                       <div className={styles.miniTitle}>
                         {item.artists[0].name}
                       </div>
                     </div>
                   </div>
-                  <div style={{ width: "175px" }}>{item.album.name}</div>
-                  <div style={{ width: "175px" }}>
+                  <div className={styles.album}>{item.album.name}</div>
+                  <div style={{ width: "175px", textAlign:"center" }}>
                     {millisToMinutesAndSeconds(item.duration_ms)}
                   </div>
                   <Image
