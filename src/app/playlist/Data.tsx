@@ -7,9 +7,9 @@ import Image from "next/image";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { debug } from "console";
 import { useSearchParams } from "next/navigation";
 import { io } from "socket.io-client";
+import { debug } from "console";
 
 const socket = io("http://localhost:5678")
 
@@ -18,8 +18,13 @@ export default function Home() {
     const playlistId = searchParams.get("id");
     const [search, setSearch] = useState<string | undefined>();
     const [queue, setQueue] = useState<QueueTrack[]>([]);
+    const [image, setImage] = useState<string>();
     const [txt, setTxt] = useState<string>();
+    const [style, setStyle] = useState<boolean>();
+    const [displayName, setDisplayName] = useState<string>();
     const [songs, setSongs] = useState<string[]>()
+    const [songAmount, setSongAmount] = useState<number>()
+    const [name, setName] = useState<string>()
 
 
     useEffect(() => {
@@ -30,6 +35,59 @@ export default function Home() {
                 if ("queue" in response) setQueue(response.queue)
             })
         }
+    }, [])
+
+    async function songSearch() {
+        const result = search?.replace(/\s+/g, "+");
+        if (!session.data?.user) return;
+        if ("accessToken" in session.data.user) {
+            const response = await fetch(
+                `https://api.spotify.com/v1/playlists/${playlistId}/images`,
+                {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+                    },
+                    method: "GET",
+                }
+            );
+            const test = await response.json().catch((err) => console.error(err));
+            setImage(test[0].url);
+            console.log(test, "this is a test")
+        }
+    }
+    async function nameSearch() {
+        const result = search?.replace(/\s+/g, "+");
+        if (!session.data?.user) return;
+        if ("accessToken" in session.data.user) {
+            const response = await fetch(
+                `https://api.spotify.com/v1/playlists/${playlistId}`,
+                {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+                    },
+                    method: "GET",
+                }
+            );
+            const test = await response.json().catch((err) => console.error(err));
+            setName(test.name);
+            if(test.name.length <= 20) {                
+                setStyle(true)
+            }else{
+                setStyle(false)
+            }
+        }
+    }
+    useEffect(() => {
+        songSearch()
+        nameSearch()
+    }, [image])
+
+
+    useEffect(() => {
     }, [])
     socket.on("connect", () => {
         console.log(socket.id);
@@ -64,6 +122,30 @@ export default function Home() {
     }
 
     useEffect(() => {
+        if (session?.data) {
+            const playlists = async () => {
+                if (!session.data?.user) return;
+                if ("accessToken" in session.data.user) {
+                    const response = await fetch(`https://api.spotify.com/v1/me `, {
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${session?.data?.user?.accessToken}`,
+                        },
+                        method: "GET",
+                    });
+                    const spotifyInformation = await response
+                        .json()
+                        .catch((err) => console.error(err));
+                    setDisplayName(spotifyInformation.display_name)
+                }
+            };
+
+            playlists();
+        }
+    }, []);
+
+    useEffect(() => {
         const songs = async () => {
             const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
                 headers: {
@@ -77,7 +159,8 @@ export default function Home() {
                 .catch(err => console.error(err))
             // console.log(test.tracks.items, "this is a test of songs")
             setSongs(test)
-
+            setSongAmount(test.tracks.items.length)
+            console.log(test, "this is a tet")
         }
         songs()
 
@@ -95,6 +178,7 @@ export default function Home() {
         { name: "Home", url: "/" },
     ]
 
+    console.log(style, "this is css style")
     return (
         <main className={styles.main}>
             {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
@@ -114,14 +198,14 @@ export default function Home() {
                     handleClick()
                 }}>
                     <div className={styles.searchInput}>
-                        <Image alt={"something"} onClick={() => {
-                        }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
-                        <input onClick={() => {
-
-                        }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
-                            setTxt(event.target.value)
-                            setSearch(event?.target.value)
-                        }} type="text" />
+                        <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} src={image ? image : ''} alt={''} height={250} width={250}></Image>
+                        <div className={styles.even}>
+                            <div style={{ marginLeft: "3px" }} className={styles.titleSmall}>playlist</div>
+                            <div className={style ? styles.songTitleLarge : styles.songTitle }>{name}</div>                            
+                            <div>
+                                <div style={{ marginLeft: "3px" }}>{displayName} •</div>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 <div className={styles.topRow}>

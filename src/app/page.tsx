@@ -261,7 +261,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className={styles.album}>{item.album.name}</div>
-                  <div style={{ width: "175px", textAlign:"center" }}>
+                  <div style={{ width: "175px", textAlign: "center" }}>
                     {millisToMinutesAndSeconds(item.duration_ms)}
                   </div>
                   <Image
