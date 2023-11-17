@@ -310,6 +310,7 @@ const Album = ({
     <Link key={id} href={`/playlist?id=${id}`}>
       {imageUrl ? (
         <Image
+          priority
           width={300}
           height={300}
           alt={"playlist image"}
