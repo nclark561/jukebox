@@ -15,6 +15,12 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
+  const { socket, setQueue } = props 
+
+  socket.on("queue-sent", ({ queue }: {queue: QueueTrack[]}) => {
+    setQueue(queue)
+  })
+
   return (
     <div className={styles.queue}>
       <div className={styles.linkContainer}>

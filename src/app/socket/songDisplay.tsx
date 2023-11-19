@@ -7,15 +7,7 @@ import styles from '../page.module.css'
 
 import { useSession } from "next-auth/react";
 
-interface Vote {
-  voted: string;
-  user: string;
-}
 // >>>>>>> 1db5abe712bd56557a620f57cc39ceb4803f0617
-
-interface QueueTrack extends Partial<Track> {
-  votes: Vote[];
-}
 
 interface DispSongProps {
   song: QueueTrack;
@@ -56,7 +48,7 @@ export default function SongDisplay(props: DispSongProps) {
         <p style={{  width: "200px", fontSize: "13px" }}>{props.song.artists && props.song.artists[0].name}</p>
       </div>
       <Image  onClick={() => { handleClick('upvoted') }} alt={'up arrow'} src={userVote === "upvoted" ? '/upW.png' : '/upB.png'} width={20} height={20}></Image>
-      {/* <p>{props.song.votes}</p> */}
+      <p>{props.song.voteCount}</p>
       <Image onClick={() => handleClick('downvoted')} alt={'up arrow'} src={userVote === "downvoted" ? '/downW.png' : '/downB.png'} width={20} height={20}></Image>
       <div className="flex justify-between">
       </div>
