@@ -55,7 +55,6 @@ export default function Home() {
       "add-song",
       room,
       song,
-      session?.data?.user?.email,
       (
         response:
           | { message: string; queue: QueueTrack[] }

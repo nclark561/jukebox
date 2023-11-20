@@ -115,6 +115,8 @@ io.on("connection", (socket: any) => {
   socket.on("delete-queue", (room: string, cb: any) => {
     const delQueue = queues.map((e: any) => e.id).indexOf(room);
     queues.splice(delQueue, 1);
+    socket.to(room).emit("queue-ended", { message: `${room} queue ended`})
+    socket.leave(room)
     cb({ message: `Ended ${room}`, queues });
   });
   socket.on("vote", (room: string, song: QueueTrack, vote: string, user: string, cb: any) => {
@@ -132,7 +134,7 @@ io.on("connection", (socket: any) => {
     socket.to(room).emit("queue-sent", { queue: currQueue?.queue })
     cb({vote: currVote?.voted, message: 'Successfully voted', currQueue})
   })
-  socket.on("add-song", (room: string, song: Track, user: string, cb: any) => {
+  socket.on("add-song", (room: string, song: Track, cb: any) => {
     if (!room) {
       cb({ errorMsg: 'room doesnt exist '})
       return
@@ -158,6 +160,7 @@ io.on("connection", (socket: any) => {
       cb({ errorMsg: 'queue does not exist'})
       return
     }
+    socket.join(room)
     cb({ message: 'queue recieved', queue: currQueue.queue})
   })
   socket.on("play-queue", async (room: string, cb: any) => {
@@ -183,6 +186,9 @@ io.on("connection", (socket: any) => {
     } else {
       cb({ voted: 'neutral', voteCount: currSong?.voteCount })
     }
+  })
+  socket.on("leave-room", (room: string) => {
+    socket.leave(room)
   })
   socket.on("disconnecting", () => {
     console.log(socket.rooms);

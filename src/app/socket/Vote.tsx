@@ -92,6 +92,7 @@ export default function Vote(props: VoteProps) {
               (response: Partial<SuccessfulResponse>) => {
                 console.log(response);
                 setQueue([])
+                localStorage.clear()
               }
             );
             localStorage.clear();

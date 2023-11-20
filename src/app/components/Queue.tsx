@@ -15,10 +15,17 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
-  const { socket, setQueue } = props 
+  const { socket, setQueue, queue } = props 
 
   socket.on("queue-sent", ({ queue }: {queue: QueueTrack[]}) => {
     setQueue(queue)
+  })
+
+  socket.on("queue-ended", ({ message }: { message: string }) => {
+    const room = localStorage.getItem("room")
+    socket.emit("leave-room", room)
+    localStorage.clear()
+    setQueue([])
   })
 
   return (

@@ -22,7 +22,7 @@ export default function Home() {
     const [txt, setTxt] = useState<string>();
     const [style, setStyle] = useState<boolean>();
     const [displayName, setDisplayName] = useState<string>();
-    const [songs, setSongs] = useState<string[]>()
+    const [songs, setSongs] = useState<any>()
     const [songAmount, setSongAmount] = useState<number>()
     const [name, setName] = useState<string>()
 
@@ -97,7 +97,7 @@ export default function Home() {
     const addSong = (song: Track) => {
         const room = localStorage.getItem("room")
 
-        socket.emit("add-song", room, song, session?.data?.user?.email, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
+        socket.emit("add-song", room, song, (response: { message: string, queue: QueueTrack[] } | { errorMsg: string }) => {
             console.log(response)
             if ("queue" in response) setQueue(response.queue)
             if ("errorMsg" in response) alert(response.errorMsg)
@@ -160,7 +160,6 @@ export default function Home() {
             // console.log(test.tracks.items, "this is a test of songs")
             setSongs(test)
             setSongAmount(test.tracks.items.length)
-            console.log(test, "this is a tet")
         }
         songs()
 
@@ -178,7 +177,6 @@ export default function Home() {
         { name: "Home", url: "/" },
     ]
 
-    console.log(style, "this is css style")
     return (
         <main className={styles.main}>
             {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
@@ -198,7 +196,7 @@ export default function Home() {
                     handleClick()
                 }}>
                     <div className={styles.searchInput}>
-                        <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} src={image ? image : ''} alt={''} height={250} width={250}></Image>
+                        {image && <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} src={image} alt={''} height={250} width={250}></Image>}
                         <div className={styles.even}>
                             <div style={{ marginLeft: "3px" }} className={styles.titleSmall}>playlist</div>
                             <div className={style ? styles.songTitleLarge : styles.songTitle }>{name}</div>                            
@@ -224,7 +222,7 @@ export default function Home() {
                             <div key={index} className={styles.rowSong}>
                                 <div>{index + 1}</div>
                                 <div className={styles.rowGap}>
-                                    <Image alt={"something"} src={item.track.album.images[1].url} height={30} width={70}></Image>
+                                    <Image alt={"something"} src={item.track.album.images[1].url} height={70} width={70}></Image>
                                     <div style={{ padding: "10px" }} className={styles.column}>
                                         <div style={{ width: "175px" }}>{item.track.name}</div>
                                         <div className={styles.miniTitle}>{item.track.artists[0].name}</div>
