@@ -15,6 +15,15 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
+<<<<<<< HEAD
+  
+  if(window.location.href.includes('playlist')){
+
+  }else{
+
+  }
+
+=======
   const { socket, setQueue, queue } = props 
 
   socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
@@ -27,6 +36,7 @@ export default function Queue(props: QueueProps) {
     localStorage.removeItem("room")
     setQueue([])
   })
+>>>>>>> c5a9a44f5fbedabae2b6503b402cf6fb06af938e
 
   return (
     <div className={styles.queue}>
@@ -42,7 +52,7 @@ export default function Queue(props: QueueProps) {
         <div className={styles.flex}>
           <Image src={'/search1.png'} alt={''} height={25} width={25} />
           <div onClick={() => {
-            props.setSearchToggle(true)
+            props?.setSearchToggle(true)
           }} className={styles.link}>Search</div>
         </div>
       </div>
