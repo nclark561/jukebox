@@ -5,6 +5,8 @@
     color: white;
     overflow: hidden;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .content {    
@@ -19,7 +21,7 @@
 
 .row {
     display: flex;
-    width: 100%;
+    width: 60%;
     justify-content: center;
 }
 
@@ -96,6 +98,13 @@
     font-size: 15px;    
     letter-spacing: 1.5px;
 }
+.songTitleSmall {
+    font-size: 20px;
+    display: flex;
+    font-weight: 400;
+    width: 150px;
+    letter-spacing: 1.5px;
+}
 .songTitle {
     font-size: 30px;
     display: flex;
@@ -167,7 +176,7 @@
 .searchInput {
     display: flex;
     width: 90%;
-    justify-content: center;
+    justify-content: flex-start;
 
 }
 

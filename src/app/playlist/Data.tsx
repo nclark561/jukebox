@@ -17,6 +17,7 @@ export default function Home() {
     const searchParams = useSearchParams();
     const playlistId = searchParams.get("id");
     const [search, setSearch] = useState<string | undefined>();
+    const [searchToggle, setSearchToggle] = useState<any>(false);
     const [queue, setQueue] = useState<QueueTrack[]>([]);
     const [image, setImage] = useState<string>();
     const [txt, setTxt] = useState<string>();
@@ -182,7 +183,7 @@ export default function Home() {
     return (
         <main className={styles.main}>
             {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
-            <Queue queue={queue} socket={socket} setQueue={setQueue} />
+            <Queue setSearchToggle={setSearchToggle} queue={queue} socket={socket} setQueue={setQueue} />
             <div className={styles.content}>
                 <div>
                     {session && (

@@ -15,6 +15,14 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
+  
+  if(window.location.href.includes('playlist')){
+
+  }else{
+
+  }
+
+
   return (
     <div className={styles.queue}>
       <div className={styles.linkContainer}>
@@ -29,7 +37,7 @@ export default function Queue(props: QueueProps) {
         <div className={styles.flex}>
           <Image src={'/search1.png'} alt={''} height={25} width={25} />
           <div onClick={() => {
-            props.setSearchToggle(true)
+            props?.setSearchToggle(true)
           }} className={styles.link}>Search</div>
         </div>
       </div>
