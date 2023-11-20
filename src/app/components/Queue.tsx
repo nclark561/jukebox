@@ -17,7 +17,7 @@ export default function Queue(props: QueueProps) {
   const session: any = useSession()
   const { socket, setQueue, queue } = props 
 
-  socket.on("queue-sent", ({ queue }: {queue: QueueTrack[]}) => {
+  socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
     setQueue(queue)
   })
 

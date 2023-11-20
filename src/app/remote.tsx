@@ -45,6 +45,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
         socket.emit("play-queue", room, (response: any) => {
           console.log(response)
           if ("queue" in response) setQueue(response.queue)
+          if ("currPlaying" in response) return
         })
       }} src={'/rightArrow.png'} alt={'right arrow'} height={50} width={50} />
     </div>
