@@ -24,7 +24,7 @@ export default function Queue(props: QueueProps) {
   socket.on("queue-ended", ({ message }: { message: string }) => {
     const room = localStorage.getItem("room")
     socket.emit("leave-room", room)
-    localStorage.clear()
+    localStorage.removeItem("room")
     setQueue([])
   })
 
