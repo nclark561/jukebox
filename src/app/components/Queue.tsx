@@ -15,7 +15,6 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
-<<<<<<< HEAD
   
   if(window.location.href.includes('playlist')){
 
@@ -23,7 +22,6 @@ export default function Queue(props: QueueProps) {
 
   }
 
-=======
   const { socket, setQueue, queue } = props 
 
   socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
@@ -36,7 +34,6 @@ export default function Queue(props: QueueProps) {
     localStorage.removeItem("room")
     setQueue([])
   })
->>>>>>> c5a9a44f5fbedabae2b6503b402cf6fb06af938e
 
   return (
     <div className={styles.queue}>
