@@ -6,6 +6,6 @@ declare global {
     user: string;
   };
   
-  type QueueTrack = Track & { votes: Vote[] };
+  type QueueTrack = Track & { votes: Vote[], voteCount: number };
 }
 

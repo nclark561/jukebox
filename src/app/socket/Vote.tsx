@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 interface SuccessfulResponse {
   message: string;
   room: string;
+  queue: QueueTrack[]
 }
 
 interface ErrorResponse {
@@ -74,6 +75,8 @@ export default function Vote(props: VoteProps) {
               "queue-room-1979",
               (response: SuccessfulResponse) => {
                 console.log(response.message);
+                setQueue(response.queue)
+                localStorage.setItem("room", response.room);
               }
             );
           }}
@@ -89,9 +92,10 @@ export default function Vote(props: VoteProps) {
               (response: Partial<SuccessfulResponse>) => {
                 console.log(response);
                 setQueue([])
+                localStorage.removeItem("room")
               }
             );
-            localStorage.clear();
+            localStorage.removeItem("room")
           }}
         >
           End Queue
