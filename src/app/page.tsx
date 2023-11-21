@@ -4,6 +4,7 @@ import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "./components/Queue";
 import styles from "./page.module.css";
 import Image from "next/image";
+import Remote from "./remote";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -182,7 +183,7 @@ export default function Home() {
                 return { id: item.id, name: item.name };
               });
               setPlaylistsInfo(playlistsInfo);
-              setLoading(!loading);              
+              setLoading(!loading);
             }
           } catch (err) {
             console.error(err);
@@ -203,92 +204,97 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {imageLoader ? <div style={{fontSize:"100px"}}>Loading...</div> : <><Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
-        <div className={styles.content}>
-          <div className={styles.logoutContainer}>
-            <div>
-              {session && (
-                <div>
-                  {/* <img src={session?.data?.user?.picture}></img> */}
+      <div style={{display:"flex", width:"100vw", height:"88vh"}}>
+        {imageLoader ? <div style={{ fontSize: "100px" }}>Loading...</div> : <><Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
+          <div className={styles.content}>
+            <div className={styles.logoutContainer}>
+              <div>
+                {session && (
+                  <div>
+                    {/* <img src={session?.data?.user?.picture}></img> */}
 
-                  {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <Link href='/login'>Login</Link>}
-                </div>
-              )}
-            </div>
-            <form className={styles.row} onSubmit={(evt) => {
-              evt.preventDefault()
-              songSearch()
-            }}>
-
-              {searchToggle ? <> <div className={styles.searchInput}>
-                <Image alt={"something"} onClick={() => {
-                  songSearch()
-                }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
-                <input onClick={() => {
-
-                }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
-                  setTxt(event.target.value)
-                  setSearch(event?.target.value)
-                }} type="text" />
+                    {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <Link href='/login'>Login</Link>}
+                  </div>
+                )}
               </div>
-              </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{ paddingLeft: "10px" }}>{displayName}</div></div>}
+              <form className={styles.row} onSubmit={(evt) => {
+                evt.preventDefault()
+                songSearch()
+              }}>
 
-            </form>
-          </div>
-          {/* <div>Create a queue and get started!</div> */}
-          <div className={styles.line}></div>
+                {searchToggle ? <> <div className={styles.searchInput}>
+                  <Image alt={"something"} onClick={() => {
+                    songSearch()
+                  }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
+                  <input onClick={() => {
 
-          {results ? (
-            <>
-              {results.slice(0, 5).map((item, index) => {
-                return (
-                  // {item.album.images[1].url? <><> : null}
-                  <div key={index} className={styles.rowSong}>
-                    <div>{index + 1}</div>
-                    <div className={styles.rowGap}>
-                      <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
-                      <div style={{ padding: "10px" }} className={styles.column}>
-                        <div className={styles.songTitleSmall}>{item.name}</div>
-                        <div className={styles.miniTitle}>
-                          {item.artists[0].name}
+                  }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
+                    setTxt(event.target.value)
+                    setSearch(event?.target.value)
+                  }} type="text" />
+                </div>
+                </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{ paddingLeft: "10px" }}>{displayName}</div></div>}
+
+              </form>
+            </div>
+            {/* <div>Create a queue and get started!</div> */}
+            <div className={styles.line}></div>
+
+            {results ? (
+              <>
+                {results.slice(0, 5).map((item, index) => {
+                  return (
+                    // {item.album.images[1].url? <><> : null}
+                    <div key={index} className={styles.rowSong}>
+                      <div>{index + 1}</div>
+                      <div className={styles.rowGap}>
+                        <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
+                        <div style={{ padding: "10px" }} className={styles.column}>
+                          <div className={styles.songTitleSmall}>{item.name}</div>
+                          <div className={styles.miniTitle}>
+                            {item.artists[0].name}
+                          </div>
                         </div>
                       </div>
+                      <div className={styles.album}>{item.album.name}</div>
+                      <div style={{ width: "175px", textAlign: "center" }}>
+                        {millisToMinutesAndSeconds(item.duration_ms)}
+                      </div>
+                      <Image
+                        onClick={() => addSong(item)}
+                        alt={"plus sign"}
+                        height={15}
+                        width={15}
+                        src={"/plus.png"}
+                      ></Image>
                     </div>
-                    <div className={styles.album}>{item.album.name}</div>
-                    <div style={{ width: "175px", textAlign: "center" }}>
-                      {millisToMinutesAndSeconds(item.duration_ms)}
-                    </div>
-                    <Image
-                      onClick={() => addSong(item)}
-                      alt={"plus sign"}
-                      height={15}
-                      width={15}
-                      src={"/plus.png"}
-                    ></Image>
-                  </div>
-                );
-              })}
-            </>
-          ) : (
-            <div className={styles.grid}>
-              {loading ? (
-                <></>
-              ) : (
-                playlistsInfo?.map((playlist, index) => {
-                  return (
-                    <Album
-                      key={playlist.id}
-                      name={playlist.name}
-                      id={playlist.id}
-                      imageUrl={images[index]}
-                    />
                   );
-                })
-              )}
-            </div>
-          )}
-        </div>
-      </>}
+                })}
+              </>
+            ) : (
+              <div className={styles.grid}>
+                {loading ? (
+                  <></>
+                ) : (
+                  playlistsInfo?.map((playlist, index) => {
+                    return (
+                      <Album
+                        key={playlist.id}
+                        name={playlist.name}
+                        id={playlist.id}
+                        imageUrl={images[index]}
+                      />
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </div>
+        </>}
+      </div>
+      <div>
+        {session?.status === 'authenticated' && <Remote session={session} socket={socket} setQueue={setQueue} />}
+      </div>
     </main>
   );
 }
@@ -300,7 +306,7 @@ const Album = ({
   id: string;
   imageUrl?: string;
   name: string;
-}) => {  
+}) => {
   return (
     <Link key={id} href={`/playlist?id=${id}`}>
       {imageUrl ? (

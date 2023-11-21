@@ -3,6 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "../components/Queue";
 import styles from '../page.module.css'
+import Remote from "../remote";
 import Image from "next/image";
 // import Search from "./search";
 import { useEffect, useState, useMemo } from "react";
@@ -75,9 +76,9 @@ export default function Home() {
             );
             const test = await response.json().catch((err) => console.error(err));
             setName(test.name);
-            if(test.name.length <= 20) {                
+            if (test.name.length <= 20) {
                 setStyle(true)
-            }else{
+            } else {
                 setStyle(false)
             }
         }
@@ -180,64 +181,68 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
-            <Queue setSearchToggle={setSearchToggle} queue={queue} socket={socket} setQueue={setQueue} />
-            <div className={styles.content}>
-                <div>
-                    {session && (
-                        <div>
-                            <img src={session?.data?.user?.picture}></img>
-
-                            {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <Link href='/login'>Login</Link>}
-                        </div>
-                    )}
-                </div>
-                <form className={styles.row} onSubmit={(evt) => {
-                    evt.preventDefault()
-                    handleClick()
-                }}>
-                    <div className={styles.searchInput}>
-                        {image && <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} src={image} alt={''} height={250} width={250}></Image>}
-                        <div className={styles.even}>
-                            <div style={{ marginLeft: "3px" }} className={styles.titleSmall}>playlist</div>
-                            <div className={style ? styles.songTitleLarge : styles.songTitle }>{name}</div>                            
+            <div style={{ display: "flex", width: "100vw", height:"88vh" }}>
+                {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
+                <Queue setSearchToggle={setSearchToggle} queue={queue} socket={socket} setQueue={setQueue} />
+                <div className={styles.content}>
+                    <div>
+                        {session && (
                             <div>
-                                <div style={{ marginLeft: "3px" }}>{displayName} •</div>
+                                <img src={session?.data?.user?.picture}></img>
+
+                                {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <Link href='/login'>Login</Link>}
+                            </div>
+                        )}
+                    </div>
+                    <form className={styles.row} onSubmit={(evt) => {
+                        evt.preventDefault()
+                        handleClick()
+                    }}>
+                        <div className={styles.searchInput}>
+                            {image && <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} src={image} alt={''} height={250} width={250}></Image>}
+                            <div className={styles.even}>
+                                <div style={{ marginLeft: "3px" }} className={styles.titleSmall}>playlist</div>
+                                <div className={style ? styles.songTitleLarge : styles.songTitle}>{name}</div>
+                                <div>
+                                    <div style={{ marginLeft: "3px" }}>{displayName} •</div>
+                                </div>
                             </div>
                         </div>
+                    </form>
+                    <div className={styles.topRow}>
+                        <div>Title</div>
+                        <div></div>
+                        <div>Album</div>
+                        <div></div>
+                        <div></div>
                     </div>
-                </form>
-                <div className={styles.topRow}>
-                    <div>Title</div>
-                    <div></div>
-                    <div>Album</div>
-                    <div></div>
-                    <div></div>
-                </div>
-                <div className={styles.line}></div>
-                <div style={{ overflowY: "auto", height: "100vh" }}>
+                    <div className={styles.line}></div>
+                    <div style={{ overflowY: "auto", height: "100vh" }}>
 
-                    {songs?.tracks.items?.map((item: any, index: number) => {
-                        return (
-                            // {item.album.images[1].url? <><> : null}
-                            <div key={index} className={styles.rowSong}>
-                                <div>{index + 1}</div>
-                                <div className={styles.rowGap}>
-                                    <Image alt={"something"} src={item.track.album.images[1].url} height={70} width={70}></Image>
-                                    <div style={{ padding: "10px" }} className={styles.column}>
-                                        <div style={{ width: "175px" }}>{item.track.name}</div>
-                                        <div className={styles.miniTitle}>{item.track.artists[0].name}</div>
+                        {songs?.tracks.items?.map((item: any, index: number) => {
+                            return (
+                                // {item.album.images[1].url? <><> : null}
+                                <div key={index} className={styles.rowSong}>
+                                    <div>{index + 1}</div>
+                                    <div className={styles.rowGap}>
+                                        <Image alt={"something"} src={item.track.album.images[1].url} height={70} width={70}></Image>
+                                        <div style={{ padding: "10px" }} className={styles.column}>
+                                            <div style={{ width: "175px" }}>{item.track.name}</div>
+                                            <div className={styles.miniTitle}>{item.track.artists[0].name}</div>
+                                        </div>
                                     </div>
+                                    <div style={{ width: "175px" }}>{item.track.album.name}</div>
+                                    <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.track.duration_ms)}</div>
+                                    <Image onClick={() => addSong(item.track)} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
+
                                 </div>
-                                <div style={{ width: "175px" }}>{item.track.album.name}</div>
-                                <div style={{ width: "175px" }}>{millisToMinutesAndSeconds(item.track.duration_ms)}</div>
-                                <Image onClick={() => addSong(item.track)} alt={"plus sign"} height={15} width={15} src={'/plus.png'}></Image>
-
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
                 </div>
-
+            </div>
+            <div>                
+                {session?.status === 'authenticated' && <Remote session={session} socket={socket} setQueue={setQueue} />}
             </div>
         </main>
     );
