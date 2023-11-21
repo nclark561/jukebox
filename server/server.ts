@@ -19,7 +19,8 @@ interface QueueTrack extends Track {
 
 interface Queue {
   id: string;
-  accessToken: string
+  accessToken: string;
+  timeoutId: any;
   queue: QueueTrack[];
 }
 
@@ -66,21 +67,65 @@ const sortQueue = (queueId: string) => {
   }
 };
 
-const playNextSong =  async (song: QueueTrack, accessToken: string) => {
+const fetchPlayerData = async (accessToken: string) => {
+  try {
+    const response: any = await fetch("https://api.spotify.com/v1/me/player", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      }
+    })
+    if (response) {
+      const currStatus = await response.json()
+      return currStatus
+    }
+    return null
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+}
+
+const playCurrSong = async (accessToken: string) => {
+  fetch(`https://api.spotify.com/v1/me/player/play`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: "PUT",
+    })
+      .catch(err => console.error(err))
+}
+
+const pauseCurrSong = async (accessToken: string) => {
+  fetch(`https://api.spotify.com/v1/me/player/pause`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: "PUT",
+    })
+      .catch(err => console.error(err))
+}
+
+const playNextSong =  async (song: QueueTrack, currQueue: Queue) => {
   try {
     await fetch(`https://api.spotify.com/v1/me/player/play`, {
       method: "Put",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${currQueue.accessToken}`,
       },
       body: JSON.stringify({
         uris: [song.uri]
       })
     })
     console.log('queue playing successfully')
-    return () => new Promise(resolve => setTimeout(resolve, song.duration_ms));
+    return () => new Promise(resolve => currQueue.timeoutId = setTimeout(resolve, song.duration_ms));
   } catch (err) {
     console.error(err)
   }
@@ -94,7 +139,7 @@ io.on("connection", (socket: any) => {
     } else {
       socket.join(room);
 
-      queues.push({ id: room, accessToken, queue });
+      queues.push({ id: room, accessToken, queue, timeoutId: null });
       console.log(queues);
 
       cb({
@@ -165,17 +210,39 @@ io.on("connection", (socket: any) => {
   })
   socket.on("play-queue", async (room: string, cb: any) => {
     const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    const currPlaying = await fetchPlayerData(currQueue.accessToken)
+    if (currPlaying) {
+      if(!currPlaying.is_playing) await playCurrSong(currQueue.accessToken)
+      const wait = () => new Promise(resolve => currQueue.timeoutId = setTimeout(resolve, currPlaying.item.duration_ms - currPlaying.progress_ms))
+      await wait()
+    }
+    if (currQueue.queue.length < 1) {
+      cb({ message: 'queue is empty', currPlaying })
+      return
+    }
     while (currQueue.queue.length > 0) {
       const nextSong = currQueue.queue[0]
-      const playingQueue = await playNextSong(nextSong, currQueue.accessToken)
+      const playingQueue = await playNextSong(nextSong, currQueue)
       if (playingQueue) {
         const currPlaying = currQueue.queue.shift()
         console.log(currQueue.queue)
         socket.to(room).emit("queue-sent", { queue: currQueue.queue, currPlaying })
+        socket.emit("queue-sent", { queue: currQueue.queue, currPlaying })
         cb({ message: 'successfully played', queue: currQueue.queue, currPlaying })
         await playingQueue()
       }
     }
+  })
+  socket.on("pause-queue", (room: string, cb: any) => {
+    const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    pauseCurrSong(currQueue.accessToken)
+    clearTimeout(currQueue.timeoutId)
+    cb({ message: 'music paused' })
+  })
+  socket.on("get-status", async (room: string, cb: any) => {
+    const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    const currPlaying = await fetchPlayerData(currQueue.accessToken)
+    cb({ isPlaying: currPlaying.is_playing })
   })
   socket.on("get-vote", (room: string, song: QueueTrack, user:string, cb: any) => {
     const currQueue = queues.filter((e: Queue) => e.id === room)[0]

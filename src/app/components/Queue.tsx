@@ -15,12 +15,6 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
-  
-  if(window.location.href.includes('playlist')){
-
-  }else{
-
-  }
 
   const { socket, setQueue, queue } = props 
 
