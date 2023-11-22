@@ -12,7 +12,7 @@ interface RemoteProps {
 export default function Remote({ session, socket, setQueue }: RemoteProps) {
   const [device, setDevice] = useState();
   const [play, setPlay] = useState(true);
-  const [current, setCurrent] = useState();
+  const [current, setCurrent] = useState<any>();
   // useEffect(() => {
   //   const room = localStorage.getItem("room")
   //   if (room) {
@@ -25,13 +25,17 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   return (
     <div className={styles.playContainer}>
       <div style={{ display: "flex", width: "18%", justifyContent: "space-evenly" }}>
-        <div>
-          <Image src={`${current?.album?.images[0]?.url}`} width={50} height={50}></Image>
-        </div>
-        <div>
-          <div className={styles.songTitleSmall}>{current?.name}</div>
-          <div className={styles.miniTitle}>{current?.album.name}</div>
-        </div>
+        {current && (
+          <>
+            <div>
+              <Image src={`${current?.album?.images[0]?.url}`} alt="current-song" width={50} height={50}></Image>
+            </div>
+            <div>
+              <div className={styles.songTitleSmall}>{current?.name}</div>
+              <div className={styles.miniTitle}>{current?.album.name}</div>
+            </div>
+          </>
+        )}
       </div>
       <div className={styles.column}>
         <div style={{ display: "flex" }}>
