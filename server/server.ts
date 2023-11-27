@@ -111,23 +111,32 @@ const pauseCurrSong = async (accessToken: string) => {
       .catch(err => console.error(err))
 }
 
-const playNextSong =  async (song: QueueTrack, currQueue: Queue) => {
-  try {
-    await fetch(`https://api.spotify.com/v1/me/player/play`, {
-      method: "Put",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${currQueue.accessToken}`,
-      },
-      body: JSON.stringify({
-        uris: [song.uri]
+const playNextSong =  async (currQueue: Queue, socket: any) => {
+  if (currQueue.queue.length > 0) {
+    const nextSong = currQueue.queue[0]
+    try {
+      await fetch(`https://api.spotify.com/v1/me/player/play`, {
+        method: "Put",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${currQueue.accessToken}`,
+        },
+        body: JSON.stringify({
+          uris: [nextSong.uri]
+        })
       })
-    })
-    console.log('queue playing successfully')
-    return () => new Promise(resolve => currQueue.timeoutId = setTimeout(resolve, song.duration_ms));
-  } catch (err) {
-    console.error(err)
+      const currPlaying = currQueue.queue.shift()
+      console.log(currPlaying)
+      socket.to(currQueue.id).emit("queue-sent", { queue: currQueue.queue, currPlaying })
+      socket.emit("queue-sent", { queue: currQueue.queue, currPlaying })
+      currQueue.timeoutId = setTimeout(() => playNextSong(currQueue, socket), nextSong.duration_ms);
+    } catch (err) {
+      console.error(err)
+    }
+  } else {
+    socket.to(currQueue.id).emit("queue-sent", { queue: currQueue.queue, message: 'queue has ended' })
+    socket.emit("queue-sent", { queue: currQueue.queue, message: 'queue has ended' })
   }
 }
 
@@ -213,6 +222,8 @@ io.on("connection", (socket: any) => {
     const currPlaying = await fetchPlayerData(currQueue.accessToken)
     if (currPlaying) {
       if(!currPlaying.is_playing) await playCurrSong(currQueue.accessToken)
+      socket.to(currQueue.id).emit("queue-sent", { queue: currQueue.queue, currPlaying: currPlaying.item })
+      socket.emit("queue-sent", { queue: currQueue.queue, currPlaying: currPlaying.item })
       const wait = () => new Promise(resolve => currQueue.timeoutId = setTimeout(resolve, currPlaying.item.duration_ms - currPlaying.progress_ms))
       await wait()
     }
@@ -220,18 +231,8 @@ io.on("connection", (socket: any) => {
       cb({ message: 'queue is empty', currPlaying })
       return
     }
-    while (currQueue.queue.length > 0) {
-      const nextSong = currQueue.queue[0]
-      const playingQueue = await playNextSong(nextSong, currQueue)
-      if (playingQueue) {
-        const currPlaying = currQueue.queue.shift()
-        console.log(currQueue.queue)
-        socket.to(room).emit("queue-sent", { queue: currQueue.queue, currPlaying })
-        socket.emit("queue-sent", { queue: currQueue.queue, currPlaying })
-        cb({ message: 'successfully played', queue: currQueue.queue, currPlaying })
-        await playingQueue()
-      }
-    }
+    playNextSong(currQueue, socket)
+    cb({ message: 'successfully played', queue: currQueue.queue })
   })
   socket.on("pause-queue", (room: string, cb: any) => {
     const currQueue = queues.filter((e: Queue) => e.id === room)[0]

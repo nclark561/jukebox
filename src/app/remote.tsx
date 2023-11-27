@@ -22,6 +22,10 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   //   }
   // }, []);
 
+  socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
+    setCurrent(currPlaying)
+  })
+
   return (
     <div className={styles.playContainer}>
       <div style={{ display: "flex", width: "18%", justifyContent: "space-evenly" }}>
@@ -46,8 +50,6 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
                 console.log('successs mother fucker')
                 const room = localStorage.getItem("room");
                 socket.emit("play-queue", room, (response: any) => {
-                  console.log(response.currPlaying.album.images[0], 'this is info');
-                  setCurrent(response.currPlaying)
                   if ("queue" in response) setQueue(response.queue);
                   if ("currPlaying" in response) console.log(response.currPlaying);
                 });
