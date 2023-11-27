@@ -77,6 +77,12 @@
     color: white;
     cursor: pointer;
 }
+.center{
+    display: flex;
+    /* align-items: center; */
+    flex-direction: column;
+    justify-content: center;
+}
 .column{
     display: flex;
     flex-direction: column;

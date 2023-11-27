@@ -54,7 +54,7 @@
 .grid {
     padding-top: 30px;
     padding: 30px;
-    height: 100vh;
+    height: 72vh;
     overflow-y: auto;
     overflow-x: hidden;
     display: grid;
