@@ -26,8 +26,9 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   //   }
   // }, []);
 
-  socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
+  socket.on("queue-sent", ({ queue, currPlaying }: { queue: QueueTrack[], currPlaying: QueueTrack }) => {
     setCurrent(currPlaying)
+    localStorage.setItem("song", JSON.stringify(currPlaying))
   })
 
   useEffect(() => {
@@ -59,14 +60,14 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   }, [counter])
   return (
     <div className={styles.playContainer}>
-      <div style={{ display: "flex", width: "25%", justifyContent: "space-evenly" }}>
+      <div style={{ display: "flex", width: "35%", justifyContent: "flex-start" }}>
         {current && (
           <>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width:"20%" }}>
               <Image src={`${current?.album?.images[0]?.url}`} alt="current-song" width={50} height={50}></Image>
             </div>
             <div className={styles.center}>
-              <div style={{ width: "250px" }} className={styles.songTitleSmall}>{current?.name}</div>
+              <div  className={styles.songTitleSmall}>{current?.name}</div>
               <div className={styles.miniTitle}>{current?.album?.name}</div>
             </div>
           </>
@@ -86,7 +87,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
                 setPlay(!play);
               }}
               src={"/play.png"}
-              alt={"left arrow"}
+              alt={"play button"}
               height={50}
               width={50}
             />
@@ -112,7 +113,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             width={50}
           />
         </div>
-        <button onClick={() => { loader() }} style={{ padding: "5px", backgroundColor: "white" }}>kale</button>
+        {/* <button onClick={() => { loader() }} style={{ padding: "5px", backgroundColor: "white" }}>kale</button> */}
         <div style={{ marginTop: "10px" }} className="w-80 bg-gray-200 rounded-full h-1 mb-4 dark:bg-gray-700">
           <div className="bg-blue-600 h-1 rounded-full dark:bg-blue-500" style={{ width: `${percent}%` }}></div>
         </div>
