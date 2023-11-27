@@ -26,6 +26,10 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   //   }
   // }, []);
 
+  socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
+    setCurrent(currPlaying)
+  })
+
   useEffect(() => {
     var data = localStorage.getItem("song")
     if (data !== null) {
@@ -76,8 +80,6 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
               onClick={() => {
                 const room = localStorage.getItem("room");
                 socket.emit("play-queue", room, (response: any) => {
-                  setCurrent(response.currPlaying)
-                  localStorage.setItem("song", `${JSON.stringify(response.currPlaying)}`)
                   if ("queue" in response) setQueue(response.queue);
                   if ("currPlaying" in response) console.log(response.currPlaying);
                 });
