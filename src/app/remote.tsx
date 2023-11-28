@@ -26,6 +26,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
 
   socket.on("queue-sent", ({ currPlaying }: { currPlaying: QueueTrack }) => {
     if ( currPlaying ) {
+      loader()
       setCurrent(currPlaying)
       localStorage.setItem("song", JSON.stringify(currPlaying))
     } else {
@@ -42,10 +43,9 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
 
   function loader() {
     let number = 0
-
-    setInterval(() => {
+    let interval = setInterval(() => {
       if (percent === 100) {
-        clearInterval()
+        clearInterval(interval)
       }
       number = number + 1
       setCounter(number * 1000)
@@ -61,6 +61,9 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     console.log(info * 100, "this is the Full Percent")
     setPercent(info * 100)
   }, [counter])
+  
+  // const percent = (counter / current?.duration_ms) * 100
+
   return (
     <div className={styles.playContainer}>
       <div style={{ display: "flex", width: "35%", justifyContent: "flex-start" }}>
@@ -120,8 +123,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             height={50}
             width={50}
           />
-        </div>
-        <button onClick={() => { loader() }} style={{ padding: "5px", backgroundColor: "white" }}>kale</button>
+        </div>        
         <div style={{ marginTop: "10px" }} className="w-80 bg-gray-200 rounded-full h-1 mb-4 dark:bg-gray-700">
           <div className="bg-blue-600 h-1 rounded-full dark:bg-blue-500" style={{ width: `${percent}%` }}></div>
         </div>
