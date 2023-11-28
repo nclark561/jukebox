@@ -1,5 +1,5 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession, signIn } from "next-auth/react";
 import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "./components/Queue";
 import styles from "./page.module.css";
@@ -205,7 +205,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <div style={{display:"flex", width:"100vw", height:"88vh"}}>
-        {imageLoader ? <div style={{ fontSize: "100px" }}>Loading...</div> : <><Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
+        {session.status === "authenticated" && imageLoader ? <div style={{ fontSize: "100px" }}>Loading...</div> : <><Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
           <div className={styles.content}>
             <div className={styles.logoutContainer}>
               <div>
@@ -213,7 +213,7 @@ export default function Home() {
                   <div>
                     {/* <img src={session?.data?.user?.picture}></img> */}
 
-                    {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <Link href='/login'>Login</Link>}
+                    {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
                   </div>
                 )}
               </div>

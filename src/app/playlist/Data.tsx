@@ -1,5 +1,5 @@
 'use client'
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession, signIn } from "next-auth/react";
 import { Track, Playlist } from "@spotify/web-api-ts-sdk";
 import Queue from "../components/Queue";
 import styles from '../page.module.css'
@@ -190,7 +190,7 @@ export default function Home() {
                             <div>
                                 <img src={session?.data?.user?.picture}></img>
 
-                                {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <Link href='/login'>Login</Link>}
+                                {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
                             </div>
                         )}
                     </div>
