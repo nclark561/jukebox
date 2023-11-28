@@ -222,8 +222,8 @@ io.on("connection", (socket: any) => {
     const currPlaying = await fetchPlayerData(currQueue.accessToken)
     if (currPlaying) {
       if(!currPlaying.is_playing) await playCurrSong(currQueue.accessToken)
-      socket.to(currQueue.id).emit("queue-sent", { queue: currQueue.queue, currPlaying: currPlaying.item })
-      socket.emit("queue-sent", { queue: currQueue.queue, currPlaying: currPlaying.item })
+      socket.to(currQueue.id).emit("curr-sent", { current: currPlaying })
+      socket.emit("curr-sent", { current: currPlaying })
       const wait = () => new Promise(resolve => currQueue.timeoutId = setTimeout(resolve, currPlaying.item.duration_ms - currPlaying.progress_ms))
       await wait()
     }
