@@ -111,6 +111,12 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
           <Image
             src={"/rightArrow.png"}
             alt={"right arrow"}
+            onClick={() => {
+              const room = localStorage.getItem("room")
+              socket.emit("skip-song", room, (response: any) => {
+                console.log(response.message)
+              })
+            }}
             height={50}
             width={50}
           />

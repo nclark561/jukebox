@@ -240,6 +240,16 @@ io.on("connection", (socket: any) => {
     clearTimeout(currQueue.timeoutId)
     cb({ message: 'music paused' })
   })
+  socket.on("skip-song", (room: string, cb: any) => {
+    const currQueue = queues.filter((e: Queue) => e.id === room)[0]
+    if (currQueue.queue.length < 1) {
+      cb({ message: 'queue is empty' })
+      return
+    }
+    clearTimeout(currQueue.timeoutId)
+    playNextSong(currQueue, socket)
+    cb({ message: "song skipped"})
+  })
   socket.on("get-status", async (room: string, cb: any) => {
     const currQueue = queues.filter((e: Queue) => e.id === room)[0]
     const currPlaying = await fetchPlayerData(currQueue.accessToken)
