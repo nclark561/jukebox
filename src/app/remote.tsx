@@ -34,6 +34,16 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     }
   })
 
+  socket.on("curr-sent", ({ current }: { current: any}) => {
+    if ( current ) {
+      setCurrent(current.item)
+      localStorage.setItem("song", JSON.stringify(current.item))
+      console.log(current.progress_ms, "timestamp")
+    } else {
+      localStorage.removeItem("song")
+    }
+  })
+
   useEffect(() => {
     var data = localStorage.getItem("song")
     if (data) {
