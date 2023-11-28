@@ -3,6 +3,7 @@ import styles from '../queue.module.css'
 import Link from "next/link";
 import Remote from "../remote";
 import Image from "next/image";
+
 import Vote from "../socket/Vote";
 import { signOut, useSession } from "next-auth/react";
 
@@ -15,7 +16,7 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
-
+  
   const { socket, setQueue } = props 
 
   socket.on("queue-sent", ({ queue }: { queue: QueueTrack[] }) => {

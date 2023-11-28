@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "./queue.module.css";
 import Image from "next/image";
-import { count } from "console";
+import { count, debug } from "console";
 
 interface RemoteProps {
   session: any;
@@ -14,6 +14,8 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   const [play, setPlay] = useState(true);
   const [percent, setPercent] = useState<number>(0);
   const [current, setCurrent] = useState<any>();
+  const [progress, setProgress] = useState<any>();
+  const [intervalState, setIntervalState] = useState<any>();
   const [counter, setCounter] = useState<number>(0);
   // useEffect(() => {
   //   const room = localStorage.getItem("room")
@@ -25,8 +27,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   // }, []);
 
   socket.on("queue-sent", ({ currPlaying }: { currPlaying: QueueTrack }) => {
-    if ( currPlaying ) {
-      loader()
+    if (currPlaying) {
       setCurrent(currPlaying)
       localStorage.setItem("song", JSON.stringify(currPlaying))
     } else {
@@ -34,11 +35,11 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     }
   })
 
-  socket.on("curr-sent", ({ current }: { current: any}) => {
-    if ( current ) {
+  socket.on("curr-sent", ({ current }: { current: any }) => {
+    if (current) {
       setCurrent(current.item)
       localStorage.setItem("song", JSON.stringify(current.item))
-      console.log(current.progress_ms, "timestamp")
+      setProgress(current.progress_ms)      
     } else {
       localStorage.removeItem("song")
     }
@@ -51,39 +52,50 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     }
   }, [])
 
-  function loader() {
-    let number = 0
-    let interval = setInterval(() => {
-      if (percent === 100) {
-        clearInterval(interval)
+  useEffect(() => {
+    function loader() {
+      let number = 0
+      let interval = setInterval(logic, 1000)
+      setIntervalState(interval)
+      function logic() {        
+        if (play === false) {          
+          number = number + 1
+          setCounter(number * 1000)          
+          // adder()     
+        } 
       }
-      number = number + 1
-      setCounter(number * 1000)
-      console.log('working')
-      // adder()        
-    }, 1000)
-    // return clearInterval()
-  }
+    }
+    loader()
+  }, [play])
+  
+
+
 
   useEffect(() => {
-    let info = counter / current?.duration_ms
-    console.log(info, "this is the decimal percent")
-    console.log(info * 100, "this is the Full Percent")
-    setPercent(info * 100)
+    let addition = counter + progress
+    let info =  addition / current?.duration_ms
+    setPercent(info * 100)        
   }, [counter])
-  
+
+
+  // useEffect(() => {
+  //   setCounter(0)
+  //   loader()
+  // }, [current])
+
   // const percent = (counter / current?.duration_ms) * 100
+
 
   return (
     <div className={styles.playContainer}>
       <div style={{ display: "flex", width: "35%", justifyContent: "flex-start" }}>
         {current && (
           <>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width:"20%" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "20%" }}>
               <Image src={`${current?.album?.images[0]?.url}`} alt="current-song" width={50} height={50}></Image>
             </div>
             <div className={styles.center}>
-              <div  className={styles.songTitleSmall}>{current?.name}</div>
+              <div className={styles.songTitleSmall}>{current?.name}</div>
               <div className={styles.miniTitle}>{current?.album?.name}</div>
             </div>
           </>
@@ -95,11 +107,11 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
           {play ? (
             <Image
               onClick={() => {
+                setPlay(false)
                 const room = localStorage.getItem("room");
                 socket.emit("play-queue", room, (response: any) => {
                   if ("queue" in response) setQueue(response.queue);
                 });
-                setPlay(!play);
               }}
               src={"/play.png"}
               alt={"play button"}
@@ -110,12 +122,13 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             <Image
               src={"/pause.png"}
               alt={"pause button"}
-              onClick={() => {
+              onClick={() => {                
+                setPlay(true)
+                clearInterval(intervalState)
                 const room = localStorage.getItem("room");
                 socket.emit("pause-queue", room, (response: any) => {
                   console.log(response)
                 })
-                setPlay(!play);
               }}
               height={50}
               width={50}
@@ -133,7 +146,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             height={50}
             width={50}
           />
-        </div>        
+        </div>
         <div style={{ marginTop: "10px" }} className="w-80 bg-gray-200 rounded-full h-1 mb-4 dark:bg-gray-700">
           <div className="bg-blue-600 h-1 rounded-full dark:bg-blue-500" style={{ width: `${percent}%` }}></div>
         </div>

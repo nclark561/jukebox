@@ -38,13 +38,13 @@ export default function SongDisplay(props: DispSongProps) {
   }, [])
 
   return (
-    <div className={styles.flex}>
+    <div style={{transition:'transform 0.5s ease-in-out'}} className={styles.flex}>
       {props.song.album?.images[1].url && <Image style={{ borderRadius: "1px" }} src={props.song.album.images[1].url} alt={"album cover"} width={50} height={50} />}
       <div>
-        <p style={{  width: "200px", fontSize: "13px" }}>{props.song.name}</p>
-        <p style={{  width: "200px", fontSize: "13px" }}>{props.song.artists && props.song.artists[0].name}</p>
+        <p style={{ width: "200px", fontSize: "13px" }}>{props.song.name}</p>
+        <p style={{ width: "200px", fontSize: "13px" }}>{props.song.artists && props.song.artists[0].name}</p>
       </div>
-      <Image  onClick={() => { handleClick('upvoted') }} alt={'up arrow'} src={userVote === "upvoted" ? '/upW.png' : '/upB.png'} width={20} height={20}></Image>
+      <Image onClick={() => { handleClick('upvoted') }} alt={'up arrow'} src={userVote === "upvoted" ? '/upW.png' : '/upB.png'} width={20} height={20}></Image>
       <p>{props.song.voteCount}</p>
       <Image onClick={() => handleClick('downvoted')} alt={'up arrow'} src={userVote === "downvoted" ? '/downW.png' : '/downB.png'} width={20} height={20}></Image>
       <div className="flex justify-between">
