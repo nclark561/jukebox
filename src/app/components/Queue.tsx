@@ -16,9 +16,9 @@ interface QueueProps {
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
 
-  const { socket, setQueue, queue } = props 
+  const { socket, setQueue } = props 
 
-  socket.on("queue-sent", ({ queue, currPlaying }: {queue: QueueTrack[], currPlaying: QueueTrack}) => {
+  socket.on("queue-sent", ({ queue }: { queue: QueueTrack[] }) => {
     setQueue(queue)
   })
 

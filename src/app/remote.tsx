@@ -11,9 +11,7 @@ interface RemoteProps {
 }
 
 export default function Remote({ session, socket, setQueue }: RemoteProps) {
-  const [device, setDevice] = useState();
   const [play, setPlay] = useState(true);
-  const [queueT, setQueueT] = useState(false);
   const [percent, setPercent] = useState<number>(0);
   const [current, setCurrent] = useState<any>();
   const [counter, setCounter] = useState<number>(0);
@@ -26,14 +24,18 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
   //   }
   // }, []);
 
-  socket.on("queue-sent", ({ queue, currPlaying }: { queue: QueueTrack[], currPlaying: QueueTrack }) => {
-    setCurrent(currPlaying)
-    localStorage.setItem("song", JSON.stringify(currPlaying))
+  socket.on("queue-sent", ({ currPlaying }: { currPlaying: QueueTrack }) => {
+    if ( currPlaying ) {
+      setCurrent(currPlaying)
+      localStorage.setItem("song", JSON.stringify(currPlaying))
+    } else {
+      localStorage.removeItem("song")
+    }
   })
 
   useEffect(() => {
     var data = localStorage.getItem("song")
-    if (data !== null) {
+    if (data) {
       setCurrent(JSON.parse(data))
     }
   }, [])
@@ -52,6 +54,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     }, 1000)
     // return clearInterval()
   }
+
   useEffect(() => {
     let info = counter / current?.duration_ms
     console.log(info, "this is the decimal percent")
@@ -82,7 +85,6 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
                 const room = localStorage.getItem("room");
                 socket.emit("play-queue", room, (response: any) => {
                   if ("queue" in response) setQueue(response.queue);
-                  if ("currPlaying" in response) console.log(response.currPlaying);
                 });
                 setPlay(!play);
               }}
@@ -113,7 +115,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             width={50}
           />
         </div>
-        {/* <button onClick={() => { loader() }} style={{ padding: "5px", backgroundColor: "white" }}>kale</button> */}
+        <button onClick={() => { loader() }} style={{ padding: "5px", backgroundColor: "white" }}>kale</button>
         <div style={{ marginTop: "10px" }} className="w-80 bg-gray-200 rounded-full h-1 mb-4 dark:bg-gray-700">
           <div className="bg-blue-600 h-1 rounded-full dark:bg-blue-500" style={{ width: `${percent}%` }}></div>
         </div>

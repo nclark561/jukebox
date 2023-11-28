@@ -199,7 +199,7 @@ export default function Home() {
                         handleClick()
                     }}>
                         <div className={styles.searchInput}>
-                            {image && <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} src={image} alt={''} height={250} width={250}></Image>}
+                            {image && <Image style={{ paddingBottom: "30px", marginLeft: "50px" }} priority src={image} alt={''} height={250} width={250}></Image>}
                             <div className={styles.even}>
                                 <div style={{ marginLeft: "3px" }} className={styles.titleSmall}>playlist</div>
                                 <div className={style ? styles.songTitleLarge : styles.songTitle}>{name}</div>

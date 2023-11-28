@@ -186,7 +186,7 @@ io.on("connection", (socket: any) => {
     sortQueue(room)
     console.log(currQueue?.queue)
     socket.to(room).emit("queue-sent", { queue: currQueue?.queue })
-    cb({vote: currVote?.voted, message: 'Successfully voted', currQueue})
+    cb({ queue: currQueue?.queue, voted: currVote?.voted })
   })
   socket.on("add-song", (room: string, song: Track, cb: any) => {
     if (!room) {

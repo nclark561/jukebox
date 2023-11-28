@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Track } from "@spotify/web-api-ts-sdk";
 
 import Image from "next/image";
 import styles from '../page.module.css'
@@ -21,15 +20,13 @@ export default function SongDisplay(props: DispSongProps) {
   const session = useSession()
   const { socket, setQueue } = props
 
-  // console.log(userVote)
-
   const handleClick = (vote: string) => {
     if (userVote === 'upvoted' && vote === 'upvoted') vote = 'neutral'
     if (userVote === 'downvoted' && vote === 'downvoted') vote = 'neutral'
     socket.emit('vote', 'queue-room-1979', props.song, vote, session?.data?.user?.email, (response: any) => {
-      setUserVote(response.vote)
-      setQueue(response.currQueue.queue)
       console.log(response)
+      setQueue(response.queue)
+      setUserVote(response.voted)
     })
   };
 
