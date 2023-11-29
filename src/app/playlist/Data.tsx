@@ -181,19 +181,9 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            <div style={{ display: "flex", width: "100vw", height:"88vh" }}>
-                {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
+            <div style={{ display: "flex", width: "100vw", height: "88vh" }}>
                 <Queue icon={false} setSearchToggle={setSearchToggle} queue={queue} socket={socket} setQueue={setQueue} />
                 <div className={styles.content}>
-                    <div>
-                        {session && (
-                            <div>
-                                <img src={session?.data?.user?.picture}></img>
-
-                                {session?.status === "authenticated" ? <button onClick={() => signOut()} style={{ width: "100%", textAlign: "end" }}>logout</button> : <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
-                            </div>
-                        )}
-                    </div>
                     <form className={styles.row} onSubmit={(evt) => {
                         evt.preventDefault()
                         handleClick()
@@ -207,6 +197,13 @@ export default function Home() {
                                     <div style={{ marginLeft: "3px" }}>{displayName} •</div>
                                 </div>
                             </div>
+                        </div>
+                        <div style={{display:"flex", alignItems:"center"}}>
+                            {session && (
+                                <div>
+                                    {session?.status === "au/thenticated" ? <button onClick={() => signOut()} className={styles.logout} style={{ width: "100%", textAlign: "end" }}>logout</button> : <button className={styles.logout} onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
+                                </div>
+                            )}
                         </div>
                     </form>
                     <div className={styles.topRow}>
@@ -241,7 +238,7 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-            <div>                
+            <div>
                 {session?.status === 'authenticated' && <Remote session={session} socket={socket} setQueue={setQueue} />}
             </div>
         </main>

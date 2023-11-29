@@ -39,6 +39,12 @@
     align-items: center;
     width: 100%;
 }
+.logout{
+    font-size: 20px;
+    background-color: gray;
+    border-radius: 15px;
+    padding: 8px;
+}
 .queueContainer{    
     width: 100%;        
     margin-top: 20px;
