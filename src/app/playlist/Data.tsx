@@ -198,10 +198,10 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-                        <div style={{display:"flex", alignItems:"center"}}>
+                        <div style={{display:"flex", alignItems:"center", height:"40%"}}>
                             {session && (
                                 <div>
-                                    {session?.status === "au/thenticated" ? <button onClick={() => signOut()} className={styles.logout} style={{ width: "100%", textAlign: "end" }}>logout</button> : <button className={styles.logout} onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
+                                    {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout} style={{ width: "100%", textAlign: "end" }}>logout</button> : <button className={styles.logout} onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
                                 </div>
                             )}
                         </div>

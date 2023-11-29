@@ -100,6 +100,7 @@
 }
 .playContainer{
     display: flex;
+    opacity: .9;
     background-color: #292929;
     justify-content: space-between;
     width: 100vw;
