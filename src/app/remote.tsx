@@ -30,6 +30,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     if (currPlaying) {
       setCurrent(currPlaying)
       localStorage.setItem("song", JSON.stringify(currPlaying))
+      setProgress(0)
     } else {
       localStorage.removeItem("song")
     }
@@ -47,13 +48,15 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
 
   useEffect(() => {
     var data = localStorage.getItem("song")
-    if (data) {
+    if (data && data !== "undefined") {
       setCurrent(JSON.parse(data))
     }
   }, [])
 
   useEffect(() => {
     function loader() {
+      clearInterval(intervalState)
+      setCounter(0)
       let number = 0
       let interval = setInterval(logic, 1000)
       setIntervalState(interval)
@@ -66,7 +69,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
       }
     }
     loader()
-  }, [play])
+  }, [play, current])
   
 
 
@@ -75,7 +78,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     let addition = counter + progress
     let info =  addition / current?.duration_ms
     setPercent(info * 100)        
-  }, [counter])
+  }, [counter, progress])
 
 
   // useEffect(() => {
@@ -109,9 +112,11 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
               onClick={() => {
                 setPlay(false)
                 const room = localStorage.getItem("room");
-                socket.emit("play-queue", room, (response: any) => {
-                  if ("queue" in response) setQueue(response.queue);
-                });
+                if (room) {
+                  socket.emit("play-queue", room, (response: any) => {
+                    if ("queue" in response) setQueue(response.queue);
+                  });
+                }
               }}
               src={"/play.png"}
               alt={"play button"}
@@ -124,11 +129,12 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
               alt={"pause button"}
               onClick={() => {                
                 setPlay(true)
-                clearInterval(intervalState)
                 const room = localStorage.getItem("room");
-                socket.emit("pause-queue", room, (response: any) => {
-                  console.log(response)
-                })
+                if (room) {
+                  socket.emit("pause-queue", room, (response: any) => {
+                    console.log(response)
+                  })
+                }
               }}
               height={50}
               width={50}
@@ -139,9 +145,11 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             alt={"right arrow"}
             onClick={() => {
               const room = localStorage.getItem("room")
-              socket.emit("skip-song", room, (response: any) => {
-                console.log(response.message)
-              })
+              if (room) {
+                socket.emit("skip-song", room, (response: any) => {
+                  console.log(response.message)
+                })
+              }
             }}
             height={50}
             width={50}

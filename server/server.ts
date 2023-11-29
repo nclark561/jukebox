@@ -168,6 +168,8 @@ io.on("connection", (socket: any) => {
   });
   socket.on("delete-queue", (room: string, cb: any) => {
     const delQueue = queues.map((e: any) => e.id).indexOf(room);
+    const currQueue = queues.find(e => e.id === room)
+    clearTimeout(currQueue?.timeoutId)
     queues.splice(delQueue, 1);
     socket.to(room).emit("queue-ended", { message: `${room} queue ended`})
     socket.leave(room)
