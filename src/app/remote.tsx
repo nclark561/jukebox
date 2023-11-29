@@ -40,7 +40,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
     if (current) {
       setCurrent(current.item)
       localStorage.setItem("song", JSON.stringify(current.item))
-      setProgress(current.progress_ms)      
+      setProgress(current.progress_ms)
     } else {
       localStorage.removeItem("song")
     }
@@ -60,24 +60,24 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
       let number = 0
       let interval = setInterval(logic, 1000)
       setIntervalState(interval)
-      function logic() {        
-        if (play === false) {          
+      function logic() {
+        if (play === false) {
           number = number + 1
-          setCounter(number * 1000)          
+          setCounter(number * 1000)
           // adder()     
-        } 
+        }
       }
     }
     loader()
   }, [play, current])
-  
+
 
 
 
   useEffect(() => {
     let addition = counter + progress
-    let info =  addition / current?.duration_ms
-    setPercent(info * 100)        
+    let info = addition / current?.duration_ms
+    setPercent(info * 100)
   }, [counter, progress])
 
 
@@ -105,8 +105,8 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
         )}
       </div>
       <div className={styles.column}>
-        <div style={{ display: "flex", justifyContent:"space-evenly", width:"250px" }}>
-          <Image src={"/leftArrow.png"} style={{opacity:".3"}} alt={"left arrow"} height={50} width={50} />
+        <div style={{ display: "flex", justifyContent: "space-evenly", width: "250px" }}>
+          <Image src={"/leftArrow.png"} style={{ opacity: ".3" }} alt={"left arrow"} height={50} width={50} />
           {play ? (
             <Image
               onClick={() => {
@@ -127,7 +127,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
             <Image
               src={"/pause.png"}
               alt={"pause button"}
-              onClick={() => {                
+              onClick={() => {
                 setPlay(true)
                 const room = localStorage.getItem("room");
                 if (room) {

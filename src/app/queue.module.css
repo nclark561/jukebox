@@ -39,11 +39,8 @@
     align-items: center;
     width: 100%;
 }
-.queueContainer{
-    display: flex;
-    width: 100%;
-    flex-direction: column;    
-    justify-content: flex-end;
+.queueContainer{    
+    width: 100%;        
     margin-top: 20px;
     height: 420px;
     overflow-y: auto;

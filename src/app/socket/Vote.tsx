@@ -50,7 +50,7 @@ export default function Vote(props: VoteProps) {
           />
         ))}
       </div>
-      <div className="flex space-ev">
+      <div style={{display:"flex", justifyContent:"space-evenly"}}>
         <button
           className={styles.queueButton}
           onClick={() => {
