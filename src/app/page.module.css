@@ -196,7 +196,17 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 5px;
-    transition: all .5s ease-in-out;
+    transition: all .3s ease-in-out;
+    opacity: 1;
+}
+.flexClear {
+    display: flex;
+    margin: 10px;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 5px;
+    transition: all .3s ease-in-out;
+    opacity: .99;
 }
 
 .flex:hover {

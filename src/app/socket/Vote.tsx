@@ -27,9 +27,7 @@ export default function Vote(props: VoteProps) {
   const [animationParent] = useAutoAnimate()
   const [animationToggle, setAnimation] = useState<boolean>(false)
 
-  useEffect(() => {
 
-  }, [queue])
 
   return (
     <div
@@ -41,6 +39,7 @@ export default function Vote(props: VoteProps) {
         alignItems: "center",
       }}
     >
+      
       <div className={styles.queueContainer}>
         {queue.map((song) => (
           <SongDisplay

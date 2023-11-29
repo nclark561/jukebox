@@ -16,7 +16,7 @@ interface DispSongProps {
 
 export default function SongDisplay(props: DispSongProps) {
   const [userVote, setUserVote] = useState("neutral");
-
+  const [animationToggle, setAnimation] = useState<boolean>(false)
   const session = useSession()
   const { socket, setQueue } = props
 
@@ -29,6 +29,9 @@ export default function SongDisplay(props: DispSongProps) {
       setUserVote(response.voted)
     })
   };
+  useEffect(() => {    
+    setAnimation(!animationToggle)
+  }, [setQueue])
 
   useEffect(() => {
     const room = localStorage.getItem("room")
@@ -38,7 +41,7 @@ export default function SongDisplay(props: DispSongProps) {
   }, [])
 
   return (
-    <div style={{transition:'transform 0.5s ease-in-out'}} className={styles.flex}>
+    <div className={animationToggle? styles.flex : styles.flexClear}>
       {props.song.album?.images[1].url && <Image style={{ borderRadius: "1px" }} src={props.song.album.images[1].url} alt={"album cover"} width={50} height={50} />}
       <div>
         <p style={{ width: "200px", fontSize: "13px" }}>{props.song.name}</p>

@@ -10,6 +10,7 @@ import { signOut, useSession } from "next-auth/react";
 interface QueueProps {
   queue: QueueTrack[]
   setSearchToggle: any
+  icon: boolean
   setQueue: React.Dispatch<React.SetStateAction<QueueTrack[]>>
   socket: any
 }
@@ -41,7 +42,7 @@ export default function Queue(props: QueueProps) {
             }} className={styles.link}>Home</div>
           </Link>
         </div>
-        <div className={styles.flex}>
+        <div className={props.icon ? styles.flex : styles.hidden}>
           <Image src={'/search1.png'} alt={''} height={25} width={25} />
           <div onClick={() => {
             props?.setSearchToggle(true)

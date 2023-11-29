@@ -183,7 +183,7 @@ export default function Home() {
         <main className={styles.main}>
             <div style={{ display: "flex", width: "100vw", height:"88vh" }}>
                 {/* <BreadCrumbs breadCrumbs={breadCrumbs} /> */}
-                <Queue setSearchToggle={setSearchToggle} queue={queue} socket={socket} setQueue={setQueue} />
+                <Queue icon={false} setSearchToggle={setSearchToggle} queue={queue} socket={socket} setQueue={setQueue} />
                 <div className={styles.content}>
                     <div>
                         {session && (

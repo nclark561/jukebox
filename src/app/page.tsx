@@ -205,7 +205,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <div style={{ display: "flex", width: "100vw", height: "88vh" }}>
-        <Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
+        <Queue icon={true} setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
         <div className={styles.content}>
           <div className={styles.logoutContainer}>
             <div>

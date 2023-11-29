@@ -15,6 +15,9 @@
     width: fit-content;
     letter-spacing: 1.5px;
 }
+.hidden{
+    display: none;
+}
 .miniTitle {
     font-size: 12px;
     color: rgb(188, 188, 188);
