@@ -210,9 +210,7 @@ export default function Home() {
           <div className={styles.logoutContainer}>
             <div>
               {session && (
-                <div>
-                  {/* <img src={session?.data?.user?.picture}></img> */}
-
+                <div>                  
                   {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
                 </div>
               )}
