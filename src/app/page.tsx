@@ -204,93 +204,98 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <div style={{display:"flex", width:"100vw", height:"88vh"}}>
-        {session.status === "authenticated" && imageLoader ? <div style={{ fontSize: "100px" }}>Loading...</div> : <><Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
-          <div className={styles.content}>
-            <div className={styles.logoutContainer}>
-              <div>
-                {session && (
-                  <div>
-                    {/* <img src={session?.data?.user?.picture}></img> */}
+      <div style={{ display: "flex", width: "100vw", height: "88vh" }}>
+        <Queue setSearchToggle={setSearchToggle} queue={queue} setQueue={setQueue} socket={socket} />
+        <div className={styles.content}>
+          <div className={styles.logoutContainer}>
+            <div>
+              {session && (
+                <div>
+                  {/* <img src={session?.data?.user?.picture}></img> */}
 
-                    {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
-                  </div>
-                )}
-              </div>
-              <form className={styles.row} onSubmit={(evt) => {
-                evt.preventDefault()
-                songSearch()
-              }}>
-
-                {searchToggle ? <> <div className={styles.searchInput}>
-                  <Image alt={"something"} onClick={() => {
-                    songSearch()
-                  }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
-                  <input onClick={() => {
-
-                  }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
-                    setTxt(event.target.value)
-                    setSearch(event?.target.value)
-                  }} type="text" />
+                  {session?.status === "authenticated" ? <button onClick={() => signOut()} className={styles.logout}>Logout</button> : <button onClick={() => signIn("spotify", { callbackUrl: "/" })}>Login</button>}
                 </div>
-                </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{ paddingLeft: "10px" }}>{displayName}</div></div>}
-
-              </form>
+              )}
             </div>
-            {/* <div>Create a queue and get started!</div> */}
-            <div className={styles.line}></div>
+            <form className={styles.row} onSubmit={(evt) => {
+              evt.preventDefault()
+              songSearch()
+            }}>
 
-            {results ? (
-              <>
-                {results.slice(0, 5).map((item, index) => {
-                  return (
-                    // {item.album.images[1].url? <><> : null}
-                    <div key={index} className={styles.rowSong}>
-                      <div>{index + 1}</div>
-                      <div className={styles.rowGap}>
-                        <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
-                        <div style={{ padding: "10px" }} className={styles.column}>
-                          <div className={styles.songTitleSmall}>{item.name}</div>
-                          <div className={styles.miniTitle}>
-                            {item.artists[0].name}
-                          </div>
+              {searchToggle ? <> <div className={styles.searchInput}>
+                <Image alt={"something"} onClick={() => {
+                  songSearch()
+                }} src={'/search.png'} style={{ position: "absolute", marginTop: "16px", marginLeft: "10px" }} height={18} width={18}></Image>
+                <input onClick={() => {
+
+                }} placeholder="What do you want to listen to?" value={txt} className={styles.input} onChange={(event) => {
+                  setTxt(event.target.value)
+                  setSearch(event?.target.value)
+                }} type="text" />
+              </div>
+              </> : <div className={styles.title}>Welcome to <div style={{ paddingLeft: "10px", color: "green", fontWeight: "700" }}>Jukify</div><div style={{ paddingLeft: "10px" }}>{displayName}</div></div>}
+
+            </form>
+          </div>
+          <div className={styles.line}></div>
+
+          {results ? (
+            <>
+              {results.slice(0, 5).map((item, index) => {
+                return (
+                  // {item.album.images[1].url? <><> : null}
+                  <div key={index} className={styles.rowSong}>
+                    <div>{index + 1}</div>
+                    <div className={styles.rowGap}>
+                      <Image alt={"something"} src={item.album.images[1].url} height={30} width={70}></Image>
+                      <div style={{ padding: "10px" }} className={styles.column}>
+                        <div className={styles.songTitleSmall}>{item.name}</div>
+                        <div className={styles.miniTitle}>
+                          {item.artists[0].name}
                         </div>
                       </div>
-                      <div className={styles.album}>{item.album.name}</div>
-                      <div style={{ width: "175px", textAlign: "center" }}>
-                        {millisToMinutesAndSeconds(item.duration_ms)}
-                      </div>
-                      <Image
-                        onClick={() => addSong(item)}
-                        alt={"plus sign"}
-                        height={15}
-                        width={15}
-                        src={"/plus.png"}
-                      ></Image>
                     </div>
-                  );
-                })}
-              </>
-            ) : (
-              <div className={styles.grid}>
-                {loading ? (
-                  <></>
-                ) : (
-                  playlistsInfo?.map((playlist, index) => {
-                    return (
-                      <Album
-                        key={playlist.id}
-                        name={playlist.name}
-                        id={playlist.id}
-                        imageUrl={images[index]}
-                      />
-                    );
-                  })
-                )}
-              </div>
-            )}
-          </div>
-        </>}
+                    <div className={styles.album}>{item.album.name}</div>
+                    <div style={{ width: "175px", textAlign: "center" }}>
+                      {millisToMinutesAndSeconds(item.duration_ms)}
+                    </div>
+                    <Image
+                      onClick={() => addSong(item)}
+                      alt={"plus sign"}
+                      height={15}
+                      width={15}
+                      src={"/plus.png"}
+                    ></Image>
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <div className={styles.grid}>
+              {session.status === "authenticated" && imageLoader ? (
+                <div className={styles.center}>
+                  <div style={{ color: "white", fontSize: "60px" }}>Loading...</div>
+                </div>
+              ) : (
+                <>
+                  {
+                    playlistsInfo?.map((playlist, index) => {
+                      return (
+                        <Album
+                          key={playlist.id}
+                          name={playlist.name}
+                          id={playlist.id}
+                          imageUrl={images[index]}
+                        />
+                      );
+                    })
+                  }
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
       </div>
       <div>
         {session?.status === 'authenticated' && <Remote session={session} socket={socket} setQueue={setQueue} />}

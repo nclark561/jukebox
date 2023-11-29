@@ -105,8 +105,8 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
         )}
       </div>
       <div className={styles.column}>
-        <div style={{ display: "flex" }}>
-          <Image src={"/leftArrow.png"} alt={"left arrow"} height={50} width={50} />
+        <div style={{ display: "flex", justifyContent:"space-evenly", width:"250px" }}>
+          <Image src={"/leftArrow.png"} style={{opacity:".3"}} alt={"left arrow"} height={50} width={50} />
           {play ? (
             <Image
               onClick={() => {
@@ -159,7 +159,7 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
           <div className="bg-blue-600 h-1 rounded-full dark:bg-blue-500" style={{ width: `${percent}%` }}></div>
         </div>
       </div>
-      <div style={{ width: "200px" }}></div>
+      <div style={{ width: "450px" }}></div>
     </div>
   );
 }

@@ -212,8 +212,13 @@
 .container {
     display: flex;
     justify-content: center;
-
-
+}
+.center{
+    width: 60vw;
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input {

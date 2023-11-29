@@ -3,6 +3,7 @@ import styles from "../queue.module.css";
 import SongDisplay from "./songDisplay";
 import { useSession } from "next-auth/react";
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useEffect, useState } from "react";
 
 interface SuccessfulResponse {
   message: string;
@@ -24,6 +25,11 @@ export default function Vote(props: VoteProps) {
   const { socket, queue, setQueue } = props;
   const session = useSession();
   const [animationParent] = useAutoAnimate()
+  const [animationToggle, setAnimation] = useState<boolean>(false)
+
+  useEffect(() => {
+
+  }, [queue])
 
   return (
     <div
