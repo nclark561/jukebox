@@ -68,9 +68,6 @@ export default function Home() {
       }
     );
   };
-
-  console.log(queue);
-
   const session = useSession();
   let profilePic: string | undefined;
   if (session.data?.user) {
@@ -296,7 +293,7 @@ export default function Home() {
 
       </div>
       <div>
-        {session?.status === 'authenticated' && <Remote session={session} socket={socket} setQueue={setQueue} />}
+        {session?.status === 'authenticated' && <Remote queue={queue} session={session} socket={socket} setQueue={setQueue} />}
       </div>
     </main>
   );

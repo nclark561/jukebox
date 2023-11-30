@@ -31,6 +31,19 @@
     font-size: 15px;
     transition: all ease-in-out .2s;    
 }
+.queueButtonO{
+    color: white;
+    background-color: rgb(86, 86, 86);
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px;
+    font-size: 15px;
+    transition: all ease-in-out .2s;    
+}
+.queueButtonO:disabled{
+    opacity: .5;
+}
+
 .queueButton:hover{
     background-color: rgb(180, 179, 179);
 }

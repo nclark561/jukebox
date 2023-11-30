@@ -49,7 +49,7 @@ export default function Vote(props: VoteProps) {
         alignItems: "center",
       }}
     >
-      
+
       <div className={styles.queueContainer}>
         {queueRoom ? queue.map((song) => (
           <SongDisplay
@@ -59,57 +59,58 @@ export default function Vote(props: VoteProps) {
             setQueue={setQueue}
           />
         )) : (
-          <h2 className="text-center">Not Currently in a queue</h2>
+          <h2 style={{fontSize:"30px"}} className="text-center">Not Currently in a queue!</h2>
         )}
       </div>
-      <div style={{display:"flex", justifyContent:"space-evenly"}}>
-        {!queueRoom && <>
-            <button
-            className={styles.queueButton}
-            onClick={() => {
-              if (session.data?.user) {
-                if ("accessToken" in session.data?.user) {
-                  socket.emit(
-                    "create-queue",
-                    "queue-room-1979",
-                    queue,
-                    session.data?.user?.accessToken,
-                    (response: SuccessfulResponse | ErrorResponse) => {
-                      console.log(response);
-                      if ("errorMsg" in response) alert(response.errorMsg);
-                      if ("room" in response) {
-                        localStorage.setItem("room", response.room);
-                        localStorage.setItem("host", "true")
-                        setQueueRoom(response.room)
-                      }
-                    }                  
-                  );
-                }
+      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+        <button
+          disabled={queueRoom}
+          className={!queueRoom ? styles.queueButton : styles.queueButtonO}
+          onClick={() => {
+            if (session.data?.user) {
+              if ("accessToken" in session.data?.user) {
+                socket.emit(
+                  "create-queue",
+                  "queue-room-1979",
+                  queue,
+                  session.data?.user?.accessToken,
+                  (response: SuccessfulResponse | ErrorResponse) => {
+                    console.log(response);
+                    if ("errorMsg" in response) alert(response.errorMsg);
+                    if ("room" in response) {
+                      localStorage.setItem("room", response.room);
+                      localStorage.setItem("host", "true")
+                      setQueueRoom(response.room)
+                    }
+                  }
+                );
               }
-            }}
-          >
-            Create Queue
-          </button>
-          <button
-            className={styles.queueButton}
-            onClick={() => {
-              socket.emit(
-                "join-queue",
-                "queue-room-1979",
-                (response: SuccessfulResponse) => {
-                  console.log(response.message);
-                  setQueue(response.queue)
-                  localStorage.setItem("room", response.room);
-                  setQueueRoom(response.room)
-                }
-              );
-            }}
-          >
-            Join Queue
-          </button>
-        </>}
-        {isHost && <button
-          className={styles.queueButton}
+            }
+          }}
+        >
+          Create Queue
+        </button>
+        <button
+         disabled={queueRoom}
+         className={!queueRoom ? styles.queueButton : styles.queueButtonO}
+          onClick={() => {
+            socket.emit(
+              "join-queue",
+              "queue-room-1979",
+              (response: SuccessfulResponse) => {
+                console.log(response.message);
+                setQueue(response.queue)
+                localStorage.setItem("room", response.room);
+                setQueueRoom(response.room)
+              }
+            );
+          }}
+        >
+          Join Queue
+        </button>
+        <button
+          disabled={!isHost}
+          className={isHost ? styles.queueButton : styles.queueButtonO}
           onClick={() => {
             socket.emit(
               "delete-queue",
@@ -127,7 +128,7 @@ export default function Vote(props: VoteProps) {
           }}
         >
           End Queue
-        </button>}
+        </button>
       </div>
     </div>
   );

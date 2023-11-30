@@ -6,11 +6,12 @@ import { count, debug } from "console";
 
 interface RemoteProps {
   session: any;
+  queue: QueueTrack[];
   socket: any;
   setQueue: React.Dispatch<React.SetStateAction<QueueTrack[]>>;
 }
 
-export default function Remote({ session, socket, setQueue }: RemoteProps) {
+export default function Remote({ session, socket, setQueue, queue }: RemoteProps) {
   const [play, setPlay] = useState(true);
   const [percent, setPercent] = useState<number>(0);
   const [current, setCurrent] = useState<any>();
@@ -88,10 +89,12 @@ export default function Remote({ session, socket, setQueue }: RemoteProps) {
 
   // const percent = (counter / current?.duration_ms) * 100
 
-
+console.log(queue, "this is good infgo")
   return (
     <div className={styles.playContainer}>
       <div style={{ display: "flex", width: "35%", justifyContent: "flex-start" }}>
+        {/* display create a queue when queue doesnt exist  */}
+        {/* {queue?.length > 1? <>kale</> : <>Create A Queue</>} */}
         {current && (
           <>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "20%" }}>

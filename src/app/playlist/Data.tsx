@@ -214,7 +214,7 @@ export default function Home() {
                         <div></div>
                     </div>
                     <div className={styles.line}></div>
-                    <div style={{ overflowY: "auto", height: "100vh" }}>
+                    <div style={{ overflowY: "auto", height: "100vh", paddingBottom:"100px" }}>
 
                         {songs?.tracks.items?.map((item: any, index: number) => {
                             return (
