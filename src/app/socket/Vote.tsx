@@ -16,14 +16,15 @@ interface VoteProps {
   socket: any;
   queue: QueueTrack[];
   setQueue: React.Dispatch<React.SetStateAction<QueueTrack[]>>;
+  queueRoom: string
+  setQueueRoom: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function Vote(props: VoteProps) {
-  const { socket, queue, setQueue } = props;
+  const { socket, queue, setQueue, queueRoom, setQueueRoom } = props;
   const session = useSession();
   const [animationParent] = useAutoAnimate()
   const [animationToggle, setAnimation] = useState<boolean>(false)
-  const [queueRoom, setQueueRoom] = useState("")
   const [isHost, setIsHost] = useState(false)
   const [queueForm, setQueueForm] = useState("")
 
@@ -55,6 +56,7 @@ export default function Vote(props: VoteProps) {
             song={song}
             socket={socket}
             setQueue={setQueue}
+            queueRoom={queueRoom}
           />
         )) : (
           <h2 style={{fontSize:"30px"}} className="text-center">Not Currently in a queue!</h2>
@@ -85,7 +87,7 @@ export default function Vote(props: VoteProps) {
           onClick={() => {
             socket.emit(
               "delete-queue",
-              "queue-room-1979",
+              queueRoom,
               (response: Partial<SuccessfulResponse>) => {
                 console.log(response);
                 setQueue([])

@@ -12,18 +12,19 @@ interface DispSongProps {
   song: QueueTrack;
   socket: any
   setQueue: any
+  queueRoom: string
 }
 
 export default function SongDisplay(props: DispSongProps) {
   const [userVote, setUserVote] = useState("neutral");
   const [animationToggle, setAnimation] = useState<boolean>(false)
   const session = useSession()
-  const { socket, setQueue } = props
+  const { socket, setQueue, queueRoom } = props
 
   const handleClick = (vote: string) => {
     if (userVote === 'upvoted' && vote === 'upvoted') vote = 'neutral'
     if (userVote === 'downvoted' && vote === 'downvoted') vote = 'neutral'
-    socket.emit('vote', 'queue-room-1979', props.song, vote, session?.data?.user?.email, (response: any) => {
+    socket.emit('vote', queueRoom, props.song, vote, session?.data?.user?.email, (response: any) => {
       console.log(response)
       setQueue(response.queue)
       setUserVote(response.voted)

@@ -3,7 +3,7 @@ import styles from '../queue.module.css'
 import Link from "next/link";
 import Remote from "../remote";
 import Image from "next/image";
-
+import { useState } from 'react';
 import Vote from "../socket/Vote";
 import { signOut, useSession } from "next-auth/react";
 
@@ -17,6 +17,7 @@ interface QueueProps {
 
 export default function Queue(props: QueueProps) {
   const session: any = useSession()
+  const [queueRoom, setQueueRoom] = useState("")
   
   const { socket, setQueue } = props 
 
@@ -30,6 +31,7 @@ export default function Queue(props: QueueProps) {
     localStorage.removeItem("room")
     localStorage.removeItem("host")
     setQueue([])
+    setQueueRoom("")
   })
 
   return (
@@ -52,7 +54,7 @@ export default function Queue(props: QueueProps) {
       </div>
       <input className={styles.input} type="text" name="" id="" />
       <div style={{ width: "100%" }}>
-        <Vote socket={props.socket} setQueue={props.setQueue} queue={props.queue} />
+        <Vote queueRoom={queueRoom} setQueueRoom={setQueueRoom} socket={props.socket} setQueue={props.setQueue} queue={props.queue} />
       </div>      
     </div>
   );
