@@ -4,15 +4,12 @@ import SongDisplay from "./songDisplay";
 import { useSession } from "next-auth/react";
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { useEffect, useState } from "react";
+import QueueForm from "./QueueForm";
 
 interface SuccessfulResponse {
   message: string;
   room: string;
   queue: QueueTrack[]
-}
-
-interface ErrorResponse {
-  errorMsg: string;
 }
 
 interface VoteProps {
@@ -28,6 +25,7 @@ export default function Vote(props: VoteProps) {
   const [animationToggle, setAnimation] = useState<boolean>(false)
   const [queueRoom, setQueueRoom] = useState("")
   const [isHost, setIsHost] = useState(false)
+  const [queueForm, setQueueForm] = useState("")
 
   useEffect(() => {
     let room = localStorage.getItem("room")
@@ -67,25 +65,7 @@ export default function Vote(props: VoteProps) {
           disabled={queueRoom}
           className={!queueRoom ? styles.queueButton : styles.queueButtonO}
           onClick={() => {
-            if (session.data?.user) {
-              if ("accessToken" in session.data?.user) {
-                socket.emit(
-                  "create-queue",
-                  "queue-room-1979",
-                  queue,
-                  session.data?.user?.accessToken,
-                  (response: SuccessfulResponse | ErrorResponse) => {
-                    console.log(response);
-                    if ("errorMsg" in response) alert(response.errorMsg);
-                    if ("room" in response) {
-                      localStorage.setItem("room", response.room);
-                      localStorage.setItem("host", "true")
-                      setQueueRoom(response.room)
-                    }
-                  }
-                );
-              }
-            }
+            setQueueForm('Create')
           }}
         >
           Create Queue
@@ -94,16 +74,7 @@ export default function Vote(props: VoteProps) {
          disabled={queueRoom}
          className={!queueRoom ? styles.queueButton : styles.queueButtonO}
           onClick={() => {
-            socket.emit(
-              "join-queue",
-              "queue-room-1979",
-              (response: SuccessfulResponse) => {
-                console.log(response.message);
-                setQueue(response.queue)
-                localStorage.setItem("room", response.room);
-                setQueueRoom(response.room)
-              }
-            );
+            setQueueForm('Join')
           }}
         >
           Join Queue
@@ -130,6 +101,7 @@ export default function Vote(props: VoteProps) {
           End Queue
         </button>
       </div>
+      {queueForm && <QueueForm session={session} queueForm={queueForm} setQueueForm={setQueueForm} queue={queue} setQueue={setQueue} socket={socket} setQueueRoom={setQueueRoom}></QueueForm>}
     </div>
   );
 }
