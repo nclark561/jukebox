@@ -162,7 +162,12 @@ console.log(queue, "this is good infgo")
           <div className="bg-blue-600 h-1 rounded-full dark:bg-blue-500" style={{ width: `${percent}%` }}></div>
         </div>
       </div>
-      <div style={{ width: "450px" }}></div>
+      <div style={{ width: "450px" }}>
+        <div className="flex flex-col items-center justify-center mt-[5px]">
+          <p>Powered By</p>
+          <Image src={"/Spotify_Logo_RGB_Green.png"} width={120} height={50} alt="spotify-logo"/>
+        </div>
+      </div>
     </div>
   );
 }
